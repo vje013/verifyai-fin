@@ -702,8 +702,8 @@ function renderSpec(spec) {
     <div class="spec-list">
       <div class="spec-row"><div class="spec-key">Agent role</div><div class="spec-val">${escapeHtml(spec.agent_role)}</div></div>
       <div class="spec-row"><div class="spec-key">System prompt</div><div class="spec-val" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); line-height: 1.5;">${escapeHtml(spec.agent_system_prompt || '(default)')}</div></div>
-      <div class="spec-row"><div class="spec-key">Steps</div><div class="spec-val">${spec.workflow_steps.map(s => escapeHtml(s)).join(' → ')}</div></div>
-      </div>`;
+      <div class="spec-row"><div class="spec-key">Steps</div>
+    </div>`;
 }
 
 function renderWebarena(result) {
