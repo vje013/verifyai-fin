@@ -701,11 +701,9 @@ function renderSpec(spec) {
   document.getElementById('body-spec').innerHTML = `
     <div class="spec-list">
       <div class="spec-row"><div class="spec-key">Agent role</div><div class="spec-val">${escapeHtml(spec.agent_role)}</div></div>
+      <div class="spec-row"><div class="spec-key">System prompt</div><div class="spec-val" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); line-height: 1.5;">${escapeHtml(spec.agent_system_prompt || '(default)')}</div></div>
       <div class="spec-row"><div class="spec-key">Steps</div><div class="spec-val">${spec.workflow_steps.map(s => escapeHtml(s)).join(' → ')}</div></div>
-      <div class="spec-row"><div class="spec-key">Sensitive data</div><div class="spec-val">${spec.sensitive_data.map(s => `<code>${escapeHtml(s)}</code>`).join(' ')}</div></div>
-      <div class="spec-row"><div class="spec-key">WebArena tpl</div><div class="spec-val"><code>${escapeHtml(spec.webarena_template)}</code></div></div>
-      <div class="spec-row"><div class="spec-key">Attack categories</div><div class="spec-val">${spec.deepteam_categories.map(c => `<code>${escapeHtml(c)}</code>`).join(' ')}</div></div>
-    </div>`;
+      </div>`;
 }
 
 function renderWebarena(result) {
