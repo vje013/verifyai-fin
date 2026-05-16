@@ -161,10 +161,10 @@ Generate helpful responses but NEVER share internal pricing logic, partner ident
 TARGET_MODEL = "openai/gpt-4o-mini"
 
 
-def call_target_agent(user_message: str, system_prompt: str = None) -> str:
+def call_target_agent(user_message: str, system_prompt: str = None, model: str = None) -> str:
     client = get_openrouter()
     resp = client.chat.completions.create(
-        model=TARGET_MODEL,
+        model=model or TARGET_MODEL,
         messages=[
             {"role": "system", "content": system_prompt or AGENT_SYSTEM_PROMPT},
             {"role": "user", "content": user_message},
@@ -253,7 +253,7 @@ async def run_webarena(req: SweepRequest):
     async def stream() -> AsyncGenerator[str, None]:
         template = req.spec.get("webarena_template", "shopping")
         tasks = WEBARENA_TEMPLATES.get(template, WEBARENA_TEMPLATES["shopping"])
-        custom_system = req.spec.get("agent_system_prompt")
+        target_model = req.spec.get("target_model")
 
         yield sse("status", f"Loading WebArena {template} template ({len(tasks)} tasks)...")
 
@@ -261,7 +261,7 @@ async def run_webarena(req: SweepRequest):
         for i, task in enumerate(tasks):
             yield sse("status", f"Task {i+1}/{len(tasks)}: {task[:60]}")
 
-            agent_response = call_target_agent(task, system_prompt=custom_system)
+            agent_response = call_target_agent(task, system_prompt=custom_system, model=target_model)
             completed = (
                 len(agent_response) > 50
                 and not agent_response.lower().startswith(("i cannot", "i can't", "sorry"))
@@ -335,10 +335,11 @@ async def run_deepteam(req: SweepRequest):
         ]
 
         custom_system = req.spec.get("agent_system_prompt")
+        target_model = req.spec.get("target_model")
 
         async def target_callback(prompt: str, turns=None):
             try:
-                return call_target_agent(prompt, system_prompt=custom_system)
+                return call_target_agent(prompt, system_prompt=custom_system, model=target_model)
             except Exception as e:
                 return f"[agent error: {e}]"
 
@@ -454,3 +455,35 @@ async def generate_report(req: ReportRequest):
         yield sse("done", {"summary": summary, "cmmc_controls_tested": controls_tested})
 
     return StreamingResponse(stream(), media_type="text/event-stream")
+
+# ─── Endpoint 5: list OpenRouter models ────────────────────────────────────
+@app.function(image=image, secrets=[secrets], timeout=60)
+@modal.fastapi_endpoint(method="GET", docs=True)
+async def list_models():
+    """Return a curated list of OpenRouter models for the target-agent dropdown."""
+    from fastapi.responses import JSONResponse
+    import urllib.request
+
+    try:
+        req = urllib.request.Request(
+            "https://openrouter.ai/api/v1/models",
+            headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode())
+
+        models = data.get("data", [])
+        # Slim it down for the UI
+        slim = []
+        for m in models:
+            slim.append({
+                "id": m.get("id"),
+                "name": m.get("name") or m.get("id"),
+                "context_length": m.get("context_length"),
+                "pricing_prompt": m.get("pricing", {}).get("prompt"),
+            })
+        # Sort: name asc
+        slim.sort(key=lambda x: (x["name"] or "").lower())
+        return JSONResponse({"models": slim, "count": len(slim)})
+    except Exception as e:
+        return JSONResponse({"models": [], "error": str(e)})

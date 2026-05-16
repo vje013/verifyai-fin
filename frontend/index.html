@@ -212,9 +212,14 @@ textarea#workflow:focus { outline: none; border-color: var(--accent-dim); }
   flex-wrap: wrap;
 }
 
-.preset-row label { font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em; }
+.preset-row label {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  min-width: 130px;
+}
 
-select#preset {
+select.input-select {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -227,7 +232,15 @@ select#preset {
   cursor: pointer;
 }
 
-select#preset:focus { outline: none; border-color: var(--accent-dim); }
+select.input-select:focus { outline: none; border-color: var(--accent-dim); }
+
+.model-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-top: 4px;
+  flex-basis: 100%;
+}
 
 #run-btn {
   margin-top: 24px;
@@ -537,8 +550,8 @@ footer {
     <div class="input-label">Workflow under test</div>
     <textarea id="workflow" placeholder="e.g., A Tier 2 supplier quoting agent that pulls part specs from internal DB and generates customer quotes..."></textarea>
     <div class="preset-row">
-      <label>or pick a preset:</label>
-      <select id="preset">
+      <label>workflow preset:</label>
+      <select id="preset" class="input-select">
         <option value="">—</option>
         <option value="quoting">Tier 2 supplier quoting agent</option>
         <option value="inventory">Plant floor inventory agent</option>
@@ -546,6 +559,13 @@ footer {
         <option value="triage">Customer service triage agent</option>
         <option value="quality">Quality inspection log agent</option>
       </select>
+    </div>
+    <div class="preset-row">
+      <label>target agent model:</label>
+      <select id="target-model" class="input-select">
+        <option value="">openai/gpt-4o-mini (default — loading more…)</option>
+      </select>
+      <div class="model-hint" id="model-hint">Models loaded from OpenRouter. The selected model will be tested as the agent under test.</div>
     </div>
     <button id="run-btn">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/></svg>
@@ -608,6 +628,7 @@ const API = {
   webarena: 'https://vje013--verifyai-backend-run-webarena.modal.run',
   deepteam: 'https://vje013--verifyai-backend-run-deepteam.modal.run',
   report:   'https://vje013--verifyai-backend-generate-report.modal.run',
+  models:   'https://vje013--verifyai-backend-list-models.modal.run',
 };
 
 const PRESETS = {
@@ -623,6 +644,35 @@ document.getElementById('preset').addEventListener('change', e => {
   if (v) document.getElementById('workflow').value = v;
 });
 
+// ─── Load OpenRouter models on page load ───────────────────────────────────
+async function loadModels() {
+  const sel = document.getElementById('target-model');
+  const hint = document.getElementById('model-hint');
+  try {
+    const resp = await fetch(API.models);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const models = data.models || [];
+    if (!models.length) throw new Error('empty list');
+
+    // Build dropdown
+    sel.innerHTML = '<option value="">openai/gpt-4o-mini (default)</option>';
+    for (const m of models) {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      const ctx = m.context_length ? ` · ${(m.context_length/1000).toFixed(0)}k ctx` : '';
+      opt.textContent = `${m.name}${ctx}`;
+      sel.appendChild(opt);
+    }
+    hint.textContent = `${models.length} OpenRouter models loaded. Pick any model to use as the agent under test.`;
+  } catch (err) {
+    console.error('Failed to load models', err);
+    hint.textContent = `Could not load model list (${err.message}). Default gpt-4o-mini will be used.`;
+  }
+}
+loadModels();
+
+// ─── SSE consumer ──────────────────────────────────────────────────────────
 async function streamPost(url, body, onEvent) {
   const resp = await fetch(url, {
     method: 'POST',
@@ -649,6 +699,7 @@ async function streamPost(url, body, onEvent) {
   }
 }
 
+// ─── Helpers ───────────────────────────────────────────────────────────────
 function setCardActive(id) {
   document.getElementById(`card-${id}`).classList.add('active');
   const b = document.getElementById(`badge-${id}`);
@@ -672,10 +723,12 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// ─── Renderers ─────────────────────────────────────────────────────────────
 function renderSpec(spec) {
   document.getElementById('body-spec').innerHTML = `
     <div class="spec-list">
       <div class="spec-row"><div class="spec-key">Agent role</div><div class="spec-val">${escapeHtml(spec.agent_role)}</div></div>
+      <div class="spec-row"><div class="spec-key">Target model</div><div class="spec-val"><code>${escapeHtml(spec.target_model || 'openai/gpt-4o-mini')}</code></div></div>
       <div class="spec-row"><div class="spec-key">System prompt</div><div class="spec-val" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); line-height: 1.5;">${escapeHtml(spec.agent_system_prompt || '(default)')}</div></div>
       <div class="spec-row"><div class="spec-key">Steps</div><div class="spec-val">${spec.workflow_steps.map(s => escapeHtml(s)).join(' → ')}</div></div>
       <div class="spec-row"><div class="spec-key">Sensitive data</div><div class="spec-val">${spec.sensitive_data.map(s => `<code>${escapeHtml(s)}</code>`).join(' ')}</div></div>
@@ -745,9 +798,11 @@ function renderSummary(text, controls) {
     <div class="summary-byline">Generated by VerifyAI · granite-4-h-small · CMMC 2.0 Level 2 audit-aligned</div>`;
 }
 
+// ─── Main orchestration ────────────────────────────────────────────────────
 async function runSweep() {
   const workflow = document.getElementById('workflow').value.trim();
   if (!workflow) { alert('Describe a workflow first.'); return; }
+  const targetModel = document.getElementById('target-model').value;
 
   const btn = document.getElementById('run-btn');
   btn.disabled = true;
@@ -763,14 +818,22 @@ async function runSweep() {
   }
 
   try {
+    // ── 1. Parse ──
     setCardActive('spec');
     let spec = null;
     await streamPost(API.parse, { workflow }, evt => {
       if (evt.type === 'status') pushStatus('spec', evt.data);
-      if (evt.type === 'done') { spec = evt.data; renderSpec(spec); clearStatus('spec'); setCardDone('spec', 'pass'); }
+      if (evt.type === 'done') { 
+        spec = evt.data; 
+        if (targetModel) spec.target_model = targetModel;
+        renderSpec(spec); 
+        clearStatus('spec'); 
+        setCardDone('spec', 'pass'); 
+      }
     });
     if (!spec) throw new Error('Spec parsing failed');
 
+    // ── 2. WebArena ──
     setCardActive('webarena');
     let wf_result = null;
     await streamPost(API.webarena, { spec }, evt => {
@@ -779,6 +842,7 @@ async function runSweep() {
     });
     if (!wf_result) throw new Error('WebArena failed');
 
+    // ── 3. DeepTeam ──
     setCardActive('deepteam');
     let sf_result = null;
     await streamPost(API.deepteam, { spec }, evt => {
@@ -789,6 +853,7 @@ async function runSweep() {
     });
     if (!sf_result) throw new Error('DeepTeam failed');
 
+    // ── 4. Report ──
     setCardActive('summary');
     await streamPost(API.report, { spec, wf_result, sf_result }, evt => {
       if (evt.type === 'status') pushStatus('summary', evt.data);
