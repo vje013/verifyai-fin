@@ -1,6 +1,6 @@
 2026 Hack Michigan
 
-Website: https://verifyai-ten.vercel.app/
+Website: https://verifyai.dev
 
 Demo: https://youtu.be/izyvrNWZGQs?si=OFWcUzpdWzjhR7v7
 
