@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>VerifyAI — Norton-style sweep for AI agents</title>
+<title>VerifyAI Fin — Compliance sweep for financial AI agents</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -518,48 +518,62 @@ footer {
     <div class="brand">
       <div class="brand-mark">V</div>
       <div>
-        <div class="brand-name">VerifyAI</div>
-        <div class="brand-sub">AI agent governance</div>
+        <div class="brand-name">VerifyAI · Fin</div>
+        <div class="brand-sub">Financial AI agent compliance</div>
       </div>
     </div>
     <div class="header-meta">
       <span><span class="status-dot"></span>Backend online</span>
       <span>granite-4-h-small</span>
       <span>deepteam v0.2.7</span>
-      <span>CMMC 2.0 L2</span>
+      <span id="header-framework">GLBA Safeguards</span>
     </div>
   </header>
 
   <section class="hero">
     <div>
-      <h1>Norton-style sweep<br>for <span class="accent">AI agents.</span></h1>
-      <p>Describe your agent's workflow. We run it through realistic tasks and adversarial attacks mapped to CMMC 2.0 Level 2 controls. You get an audit-ready report in 90 seconds.</p>
+      <h1>Norton-style sweep<br>for <span class="accent">financial AI agents.</span></h1>
+      <p>Describe your AI agent's financial workflow. We run it through realistic tasks and adversarial attacks mapped to GLBA, SOC 2, IRS Pub 1075, or PCI DSS controls. You get an audit-ready report in 90 seconds.</p>
     </div>
     <div class="hero-side">
       <h3>How it works</h3>
       <ol>
         <li>Granite parses your workflow into a structured spec</li>
         <li>WebArena runs the agent through realistic tasks</li>
-        <li>DeepTeam probes it with CMMC-aligned attacks</li>
+        <li>DeepTeam probes it with compliance-aligned attacks</li>
         <li>Granite writes an audit-ready summary</li>
       </ol>
     </div>
   </section>
 
   <div class="input-card">
-    <div class="input-label">Workflow under test</div>
-    <textarea id="workflow" placeholder="e.g., A Tier 2 supplier quoting agent that pulls part specs from internal DB and generates customer quotes..."></textarea>
+    <div class="input-label">Financial workflow under test</div>
+    <textarea id="workflow" placeholder="e.g., A payroll anomaly detection agent that monitors paycheck variance, missed timesheets, and ghost employees across customer accounts..."></textarea>
+
     <div class="preset-row">
       <label>workflow preset:</label>
       <select id="preset" class="input-select">
         <option value="">—</option>
-        <option value="quoting">Tier 2 supplier quoting agent</option>
-        <option value="inventory">Plant floor inventory agent</option>
-        <option value="oem-sync">OEM data sync agent</option>
-        <option value="triage">Customer service triage agent</option>
-        <option value="quality">Quality inspection log agent</option>
+        <option value="direct-deposit">Direct deposit enrollment agent</option>
+        <option value="payroll-anomaly">Payroll anomaly detection agent</option>
+        <option value="tax-forms">Tax form generation agent</option>
+        <option value="benefits-deduction">Benefits deduction agent</option>
+        <option value="compliance-reporting">Compliance reporting agent</option>
       </select>
     </div>
+
+    <div class="preset-row">
+      <label>compliance framework:</label>
+      <select id="framework" class="input-select">
+        <option value="GLBA Safeguards Rule">GLBA Safeguards Rule — Financial / Consumer Data</option>
+        <option value="SOC 2 Type II">SOC 2 Type II — SaaS / General Trust</option>
+        <option value="IRS Pub 1075">IRS Pub 1075 — Federal Tax Information</option>
+        <option value="PCI DSS 4.0">PCI DSS 4.0 — Payment Card Data</option>
+        <option value="CMMC 2.0 L2">CMMC 2.0 L2 — Defense Industrial Base</option>
+      </select>
+      <div class="model-hint" id="framework-hint">Adversarial probes map to the selected framework's controls. Switch frameworks to see how the same agent is evaluated against different audits.</div>
+    </div>
+
     <div class="preset-row">
       <label>target agent model:</label>
       <select id="target-model" class="input-select">
@@ -567,6 +581,7 @@ footer {
       </select>
       <div class="model-hint" id="model-hint">Models loaded from OpenRouter. The selected model will be tested as the agent under test.</div>
     </div>
+
     <button id="run-btn">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/></svg>
       Run Sweep
@@ -596,7 +611,7 @@ footer {
 
     <div class="card" id="card-deepteam">
       <div class="card-header">
-        <div class="card-title"><div class="card-step">03</div>Safety Posture · CMMC 2.0 L2</div>
+        <div class="card-title"><div class="card-step">03</div>Safety Posture · <span id="framework-label">GLBA Safeguards Rule</span></div>
         <div class="badge pending" id="badge-deepteam">PENDING</div>
       </div>
       <div id="status-deepteam"></div>
@@ -616,13 +631,14 @@ footer {
   </div>
 
   <footer>
-    <span>Built in Michigan · 2026</span>
-    <span>watsonx.ai · Granite-4 · DeepTeam · CMMC 2.0 Level 2 · OpenRouter</span>
+    <span>VerifyAI · Fin · Powered by Darwin Adaptive Systems</span>
+    <span>watsonx.ai · Granite-4 · DeepTeam · GLBA · SOC 2 · IRS Pub 1075 · PCI DSS · OpenRouter</span>
   </footer>
 
 </div>
 
 <script>
+// ─── Shared backend (verifyai-backend on Modal) ────────────────────────────
 const API = {
   parse:    'https://vje013--verifyai-backend-parse-workflow.modal.run',
   webarena: 'https://vje013--verifyai-backend-run-webarena.modal.run',
@@ -631,18 +647,48 @@ const API = {
   models:   'https://vje013--verifyai-backend-list-models.modal.run',
 };
 
+// ─── Financial workflow presets ────────────────────────────────────────────
 const PRESETS = {
-  'quoting':   'A Tier 2 Michigan auto supplier quoting agent that pulls part specs from internal DB and generates customer quotes while protecting OEM pricing logic and NDA data.',
-  'inventory': 'A plant floor inventory reconciliation agent that updates stock levels across MRP and ERP systems and flags discrepancies above 5%.',
-  'oem-sync':  'An agent that syncs production schedule data from a Tier 1 OEM portal to the supplier MES while enforcing ITAR data boundaries.',
-  'triage':    'A customer service triage agent that classifies inbound supplier complaints and routes to engineering, billing, or quality.',
-  'quality':   'An agent that ingests quality inspection logs from CMM machines and flags parts exceeding tolerance spec.',
+  'direct-deposit': {
+    workflow: 'A direct deposit enrollment agent that collects employee bank account and routing numbers, verifies SSN against payroll records, and updates the MES payroll system while protecting NPI.',
+    framework: 'GLBA Safeguards Rule',
+  },
+  'payroll-anomaly': {
+    workflow: 'A payroll anomaly detection agent that monitors paycheck variance, missed timesheets, and ghost employee patterns across customer payroll accounts, surfacing alerts to the operations team.',
+    framework: 'SOC 2 Type II',
+  },
+  'tax-forms': {
+    workflow: 'A tax form generation agent that produces W-2, 1099, and 941 quarterly filings from internal payroll data, transmitting filings to the IRS while protecting federal tax information.',
+    framework: 'IRS Pub 1075',
+  },
+  'benefits-deduction': {
+    workflow: 'A benefits deduction agent that calculates 401(k), HSA, FSA, and garnishment withholdings per paycheck, applying state-specific rules and protecting employee PII.',
+    framework: 'GLBA Safeguards Rule',
+  },
+  'compliance-reporting': {
+    workflow: 'A compliance reporting agent that produces audit-ready evidence packets for IRS, DOL, and state authorities, drawing from internal payroll and HR data while protecting PCI and PII.',
+    framework: 'PCI DSS 4.0',
+  },
 };
 
+// ─── Preset → workflow + framework ─────────────────────────────────────────
 document.getElementById('preset').addEventListener('change', e => {
-  const v = PRESETS[e.target.value];
-  if (v) document.getElementById('workflow').value = v;
+  const preset = PRESETS[e.target.value];
+  if (!preset) return;
+  document.getElementById('workflow').value = preset.workflow;
+  document.getElementById('framework').value = preset.framework;
+  updateFrameworkLabel();
 });
+
+document.getElementById('framework').addEventListener('change', updateFrameworkLabel);
+
+function updateFrameworkLabel() {
+  const fw = document.getElementById('framework').value;
+  document.getElementById('framework-label').textContent = fw;
+  // Header chip — short label for visibility
+  const short = fw.replace('Safeguards Rule', 'Safeguards').replace(' Type II', '');
+  document.getElementById('header-framework').textContent = short;
+}
 
 // ─── Load OpenRouter models on page load ───────────────────────────────────
 async function loadModels() {
@@ -655,7 +701,6 @@ async function loadModels() {
     const models = data.models || [];
     if (!models.length) throw new Error('empty list');
 
-    // Build dropdown
     sel.innerHTML = '<option value="">openai/gpt-4o-mini (default)</option>';
     for (const m of models) {
       const opt = document.createElement('option');
@@ -729,6 +774,7 @@ function renderSpec(spec) {
     <div class="spec-list">
       <div class="spec-row"><div class="spec-key">Agent role</div><div class="spec-val">${escapeHtml(spec.agent_role)}</div></div>
       <div class="spec-row"><div class="spec-key">Target model</div><div class="spec-val"><code>${escapeHtml(spec.target_model || 'openai/gpt-4o-mini')}</code></div></div>
+      <div class="spec-row"><div class="spec-key">Framework</div><div class="spec-val"><code>${escapeHtml(spec.framework || 'GLBA Safeguards Rule')}</code></div></div>
       <div class="spec-row"><div class="spec-key">System prompt</div><div class="spec-val" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); line-height: 1.5;">${escapeHtml(spec.agent_system_prompt || '(default)')}</div></div>
       <div class="spec-row"><div class="spec-key">Steps</div><div class="spec-val">${spec.workflow_steps.map(s => escapeHtml(s)).join(' → ')}</div></div>
       <div class="spec-row"><div class="spec-key">Sensitive data</div><div class="spec-val">${spec.sensitive_data.map(s => `<code>${escapeHtml(s)}</code>`).join(' ')}</div></div>
@@ -761,41 +807,45 @@ function renderWebarena(result) {
 function renderDeepteam(result) {
   const rate = result.pass_rate;
   const cls = rateClass(rate);
+  const framework = result.framework || 'GLBA Safeguards Rule';
+  document.getElementById('framework-label').textContent = framework;
+
   const rows = result.findings.map(f => `
     <tr>
       <td>${escapeHtml(f.vulnerability)}</td>
       <td class="mono">${escapeHtml(f.attack)}</td>
       <td>
-        <span class="cmmc-cell">${escapeHtml(f.cmmc_control || 'n/a')}</span>
-        <span class="cmmc-title">${escapeHtml(f.cmmc_title || '')}</span>
+        <span class="cmmc-cell">${escapeHtml(f.control_id || 'n/a')}</span>
+        <span class="cmmc-title">${escapeHtml(f.control_title || '')}</span>
       </td>
       <td><span class="pill ${f.passed ? 'pass' : 'fail'}">${f.passed ? 'BLOCKED' : 'LEAKED'}</span></td>
     </tr>`).join('');
   
-  const controls = result.cmmc_controls_tested || [];
+  const controls = result.controls_tested || [];
   const chips = controls.length > 0 ?
     `<div class="cmmc-chip-row">${controls.map(c => `<span class="cmmc-chip">${escapeHtml(c)}</span>`).join('')}</div>` : '';
 
   document.getElementById('body-deepteam').innerHTML = `
     <div class="metric-row">
       <div class="metric-value ${cls}">${(rate*100).toFixed(0)}%</div>
-      <div class="metric-label">mitigation rate · ${result.total} adversarial probes · ${controls.length} CMMC controls tested</div>
+      <div class="metric-label">mitigation rate · ${result.total} adversarial probes · ${controls.length} ${escapeHtml(framework)} controls tested</div>
     </div>
     ${chips}
     <table style="margin-top: 14px;">
-      <thead><tr><th>Vulnerability</th><th>Attack</th><th>CMMC 2.0 Control</th><th>Result</th></tr></thead>
+      <thead><tr><th>Vulnerability</th><th>Attack</th><th>${escapeHtml(framework)} Control</th><th>Result</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
   return cls;
 }
 
-function renderSummary(text, controls) {
+function renderSummary(text, controls, framework) {
+  const fw = framework || 'GLBA Safeguards Rule';
   const chips = controls && controls.length > 0 ?
     `<div class="cmmc-chip-row">${controls.map(c => `<span class="cmmc-chip">${escapeHtml(c)}</span>`).join('')}</div>` : '';
   document.getElementById('body-summary').innerHTML = `
     <div class="summary-text">${escapeHtml(text)}</div>
     ${chips}
-    <div class="summary-byline">Generated by VerifyAI · granite-4-h-small · CMMC 2.0 Level 2 audit-aligned</div>`;
+    <div class="summary-byline">Generated by VerifyAI · Fin · granite-4-h-small · ${escapeHtml(fw)} audit-aligned</div>`;
 }
 
 // ─── Main orchestration ────────────────────────────────────────────────────
@@ -803,6 +853,7 @@ async function runSweep() {
   const workflow = document.getElementById('workflow').value.trim();
   if (!workflow) { alert('Describe a workflow first.'); return; }
   const targetModel = document.getElementById('target-model').value;
+  const framework = document.getElementById('framework').value;
 
   const btn = document.getElementById('run-btn');
   btn.disabled = true;
@@ -826,6 +877,7 @@ async function runSweep() {
       if (evt.type === 'done') { 
         spec = evt.data; 
         if (targetModel) spec.target_model = targetModel;
+        spec.framework = framework;
         renderSpec(spec); 
         clearStatus('spec'); 
         setCardDone('spec', 'pass'); 
@@ -847,7 +899,7 @@ async function runSweep() {
     let sf_result = null;
     await streamPost(API.deepteam, { spec }, evt => {
       if (evt.type === 'status') pushStatus('deepteam', evt.data);
-      if (evt.type === 'finding') pushStatus('deepteam', `${evt.data.cmmc_control}: ${evt.data.attack} → ${evt.data.passed ? 'BLOCKED' : 'LEAKED'}`);
+      if (evt.type === 'finding') pushStatus('deepteam', `${evt.data.control_id}: ${evt.data.attack} → ${evt.data.passed ? 'BLOCKED' : 'LEAKED'}`);
       if (evt.type === 'error') pushStatus('deepteam', `Error: ${evt.data}`);
       if (evt.type === 'done') { sf_result = evt.data; const cls = renderDeepteam(sf_result); clearStatus('deepteam'); setCardDone('deepteam', cls); }
     });
@@ -857,7 +909,7 @@ async function runSweep() {
     setCardActive('summary');
     await streamPost(API.report, { spec, wf_result, sf_result }, evt => {
       if (evt.type === 'status') pushStatus('summary', evt.data);
-      if (evt.type === 'done') { renderSummary(evt.data.summary, evt.data.cmmc_controls_tested); clearStatus('summary'); setCardDone('summary', 'pass'); }
+      if (evt.type === 'done') { renderSummary(evt.data.summary, evt.data.controls_tested, evt.data.framework); clearStatus('summary'); setCardDone('summary', 'pass'); }
     });
 
   } catch (err) {
