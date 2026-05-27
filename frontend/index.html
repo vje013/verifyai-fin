@@ -505,11 +505,13 @@ footer {
     <div class="preset-row det-only" style="display:none;">
       <label>determinism workflow:</label>
       <select id="det-template" class="input-select">
-        <option value="weekly_summary">Weekly summary generation</option>
-        <option value="smart_alert">Smart alert decision</option>
-        <option value="ar_chase">AR-chase reminder list</option>
+        <option value="smart_alert">Smart Alert decision (fire / don't-fire)</option>
+        <option value="ai_chat">AI Chat — financial Q&A ("what's my EBITDA?")</option>
+        <option value="weekly_summary" selected>Weekly Summary narrative</option>
+        <option value="scenario_planning">Scenario Planning ("what-if" simulator)</option>
+        <option value="forecast">Forecast (3-month projection)</option>
       </select>
-      <div class="model-hint">Which finance workflow to run N times against the QuickBooks fixture.</div>
+      <div class="model-hint">Five Echelor workflows ranked by catastrophic-drift impact. Each tests a different output type against the QuickBooks fixture.</div>
     </div>
 
     <button id="run-btn">
