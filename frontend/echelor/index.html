@@ -38,16 +38,40 @@ html, body {
 }
 body {
   background:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(0,212,170,0.06), transparent),
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(184,156,78,0.05), transparent),
     radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0,212,170,0.04), transparent),
     var(--bg);
 }
 
-.container { max-width: 1280px; margin: 0 auto; padding: 40px 32px 80px; }
+.container { max-width: 1280px; margin: 0 auto; padding: 32px 32px 80px; }
+
+/* Top nav */
+.topnav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px; max-width: 1280px; margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,14,20,0.6); backdrop-filter: blur(8px);
+}
+.topnav-brand { display: flex; align-items: center; gap: 12px; }
+.topnav-mark {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent) 0%, #0a7d6a 100%);
+  display: grid; place-items: center;
+  font-weight: 700; color: #0a0a0a; font-size: 15px;
+}
+.topnav-name { font-weight: 700; font-size: 16px; letter-spacing: -0.015em; }
+.topnav-tabs { display: flex; gap: 4px; }
+.topnav-tab {
+  padding: 8px 14px; font-size: 13px; font-weight: 500;
+  color: var(--text-dim); text-decoration: none;
+  border-radius: 7px; transition: all 0.15s; letter-spacing: -0.005em;
+}
+.topnav-tab:hover { color: var(--text); background: var(--surface-2); }
+.topnav-tab.active { color: var(--accent); background: rgba(0,212,170,0.08); }
 
 header {
   display: flex; align-items: center; justify-content: space-between;
-  padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid var(--border);
+  padding-bottom: 24px; margin-bottom: 28px; border-bottom: 1px solid var(--border);
 }
 .brand { display: flex; align-items: center; gap: 14px; }
 .brand-mark {
@@ -72,14 +96,74 @@ header {
 }
 @keyframes pulse { 50% { opacity: 0.4; } }
 
-.hero { margin-bottom: 32px; }
+.hero { margin-bottom: 28px; }
 .hero h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 12px; }
-.hero h1 .accent { color: var(--accent); }
-.hero p { color: var(--text-dim); font-size: 16px; max-width: 700px; }
+.hero h1 .accent { color: var(--gold); }
+.hero p { color: var(--text-dim); font-size: 16px; max-width: 760px; }
 
+/* ═════════ Determinism hero panel (above framework chips) ═════════ */
+.det-hero {
+  background: linear-gradient(135deg, #11161f 0%, #1a1410 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: 16px; padding: 32px; margin-bottom: 20px;
+  position: relative;
+}
+.det-hero::before {
+  content: '✦'; position: absolute;
+  top: 14px; right: 18px;
+  color: var(--gold); font-size: 16px;
+}
+.det-hero-label {
+  font-family: 'Cinzel', serif; font-size: 13px;
+  color: var(--gold); letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.det-hero-grid {
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 32px; align-items: center;
+}
+.det-hero-big { display: flex; align-items: baseline; gap: 16px; }
+.det-hero-rate {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 64px; font-weight: 700; line-height: 1;
+  letter-spacing: -0.03em;
+}
+.det-hero-rate.pass { color: var(--gold-bright); text-shadow: 0 0 24px rgba(212,200,150,0.3); }
+.det-hero-rate.warn { color: var(--warn); }
+.det-hero-rate.fail { color: var(--fail); }
+.det-hero-rate.pending { color: var(--text-faint); }
+.det-hero-detail {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; color: var(--text-dim);
+}
+.det-hero-stat-label {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 6px;
+}
+.det-hero-stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px; font-weight: 700; color: var(--text);
+}
+.det-hero-stat-sub {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--text-faint); margin-top: 4px;
+}
+.det-hero-tagline {
+  margin-top: 20px; padding-top: 18px;
+  border-top: 1px solid var(--gold-dim);
+  font-family: 'Cinzel', serif; font-size: 14px;
+  color: var(--gold-bright); letter-spacing: 0.06em;
+  font-style: italic;
+}
+
+/* Posture card (compliance) */
 .posture-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 16px; padding: 32px; margin-bottom: 24px;
+  border-radius: 16px; padding: 28px; margin-bottom: 20px;
+}
+.posture-label-small {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 14px;
 }
 .posture-grid {
   display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
@@ -88,39 +172,30 @@ header {
 .posture-big { display: flex; align-items: baseline; gap: 16px; }
 .posture-rate {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 72px; font-weight: 700; line-height: 1;
+  font-size: 56px; font-weight: 700; line-height: 1;
   letter-spacing: -0.03em;
 }
 .posture-rate.pass { color: var(--pass); }
 .posture-rate.warn { color: var(--warn); }
 .posture-rate.fail { color: var(--fail); }
-.posture-label {
-  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--text-dim); margin-bottom: 8px;
-}
 .posture-detail { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); }
-.posture-stat-label {
-  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--text-dim); margin-bottom: 6px;
-}
-.posture-stat-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 24px; font-weight: 700; color: var(--text);
-}
-.posture-stat-sub {
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  color: var(--text-faint); margin-top: 4px;
-}
+.posture-stat-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.posture-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: var(--text); }
+.posture-stat-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-faint); margin-top: 4px; }
 
 .framework-row {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px;
-  padding-top: 20px; border-top: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px;
+  padding-top: 18px; border-top: 1px solid var(--border);
 }
 .framework-chip {
   font-family: 'JetBrains Mono', monospace; font-size: 11px;
   background: rgba(0,212,170,0.08); color: var(--accent);
   padding: 4px 10px; border-radius: 5px;
   border: 1px solid rgba(0,212,170,0.2);
+}
+.framework-chip.gold {
+  background: rgba(184,156,78,0.08); color: var(--gold);
+  border-color: rgba(184,156,78,0.3);
 }
 
 .section-label {
@@ -129,7 +204,7 @@ header {
 }
 .workflow-grid {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 20px; margin-bottom: 32px;
+  gap: 20px; margin-bottom: 28px;
 }
 .workflow-card {
   background: var(--surface); border: 1px solid var(--border);
@@ -139,6 +214,7 @@ header {
 .workflow-card.warn { border-left: 3px solid var(--warn); }
 .workflow-card.fail { border-left: 3px solid var(--fail); }
 .workflow-card.pending { border-left: 3px solid var(--text-faint); }
+.workflow-card.determinism { border-left: 3px solid var(--gold); }
 
 .workflow-head {
   display: flex; justify-content: space-between; align-items: flex-start;
@@ -154,6 +230,7 @@ header {
 .workflow-rate.warn { color: var(--warn); }
 .workflow-rate.fail { color: var(--fail); }
 .workflow-rate.pending { color: var(--text-faint); }
+.workflow-rate.gold { color: var(--gold-bright); }
 
 .workflow-stats {
   display: grid; grid-template-columns: 1fr 1fr 1fr;
@@ -169,6 +246,10 @@ header {
   border: 1px solid rgba(0,212,170,0.2);
   margin-top: 12px; display: inline-block;
 }
+.workflow-framework.gold {
+  background: rgba(184,156,78,0.08); color: var(--gold);
+  border-color: rgba(184,156,78,0.3);
+}
 .workflow-controls { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 4px; }
 .workflow-control-chip {
   font-family: 'JetBrains Mono', monospace; font-size: 9px;
@@ -176,14 +257,41 @@ header {
   padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-bright);
 }
 
+/* Determinism sub-block on each workflow card */
+.wf-det-block {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px dashed var(--gold-dim);
+}
+.wf-det-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.wf-det-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.wf-det-value {
+  font-family: 'JetBrains Mono', monospace; font-size: 14px;
+  font-weight: 700; color: var(--gold-bright);
+}
+.wf-drift-pill {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  padding: 2px 8px; border-radius: 4px;
+  letter-spacing: 0.06em; margin-top: 6px;
+}
+.wf-drift-pill.stable { background: rgba(0,212,170,0.1); color: var(--pass); border: 1px solid rgba(0,212,170,0.2); }
+.wf-drift-pill.wording { background: rgba(184,156,78,0.1); color: var(--gold); border: 1px solid rgba(184,156,78,0.3); }
+.wf-drift-pill.numbers { background: rgba(255,71,87,0.1); color: var(--fail); border: 1px solid rgba(255,71,87,0.3); }
+.wf-drift-pill.decisions { background: rgba(255,71,87,0.15); color: var(--fail); border: 1px solid rgba(255,71,87,0.4); font-weight: 700; }
+
 .cert-btn {
   margin-top: 16px; width: 100%;
   background: transparent; border: 1px solid var(--gold-dim);
   color: var(--gold-bright);
   padding: 10px 14px; border-radius: 8px;
   font-family: 'Cinzel', serif; font-size: 11px;
-  letter-spacing: 0.12em; cursor: pointer;
-  transition: all 0.15s;
+  letter-spacing: 0.12em; cursor: pointer; transition: all 0.15s;
   text-transform: uppercase;
 }
 .cert-btn:hover {
@@ -227,6 +335,15 @@ header {
   color: var(--text-faint); letter-spacing: 0.1em;
   text-transform: uppercase; margin-bottom: 12px;
 }
+.faq-copy-block {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
+  font-size: 13px; color: var(--text); line-height: 1.6;
+  margin-top: 16px;
+}
+.faq-copy-block strong { color: var(--gold-bright); }
+.faq-copy-block .det-inline { color: var(--gold); font-weight: 600; }
+.faq-copy-block .pass-inline { color: var(--pass); font-weight: 600; }
 
 .billing-card {
   background: var(--surface); border: 1px solid var(--border);
@@ -264,7 +381,7 @@ footer {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ═════ Certificate modal ═════ */
+/* Certificate modal */
 .cert-modal-backdrop {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.85);
@@ -275,143 +392,60 @@ footer {
 .cert-modal-backdrop.open { display: flex; }
 .cert-modal {
   background: linear-gradient(180deg, #0d1218 0%, #0a0e14 100%);
-  border: 2px double var(--gold-dim);
-  border-radius: 4px;
+  border: 2px double var(--gold-dim); border-radius: 4px;
   max-width: 900px; width: 100%;
-  max-height: 90vh; overflow-y: auto;
-  position: relative;
+  max-height: 90vh; overflow-y: auto; position: relative;
 }
 .cert-modal-controls {
   display: flex; gap: 8px; justify-content: flex-end;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--surface-3);
+  padding: 14px 20px; border-bottom: 1px solid var(--surface-3);
   background: rgba(0,0,0,0.3);
 }
 .cert-modal-controls button {
-  background: transparent;
-  border: 1px solid var(--gold-dim);
-  color: var(--gold-bright);
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; letter-spacing: 0.08em;
-  cursor: pointer; transition: all 0.15s;
+  background: transparent; border: 1px solid var(--gold-dim);
+  color: var(--gold-bright); padding: 6px 14px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s;
   text-transform: uppercase;
 }
-.cert-modal-controls button:hover {
-  background: rgba(184,156,78,0.08); border-color: var(--gold);
-}
-.cert-modal-controls button.active {
-  background: rgba(184,156,78,0.15); border-color: var(--gold);
-}
-.cert-modal-controls .close-btn {
-  border-color: var(--text-faint); color: var(--text-dim);
-  margin-left: auto;
-}
+.cert-modal-controls button:hover { background: rgba(184,156,78,0.08); border-color: var(--gold); }
+.cert-modal-controls button.active { background: rgba(184,156,78,0.15); border-color: var(--gold); }
+.cert-modal-controls .close-btn { border-color: var(--text-faint); color: var(--text-dim); margin-left: auto; }
 .cert-modal-body { padding: 40px; }
-
-/* ASCII certificate display */
 .cert-ascii {
   font-family: 'JetBrains Mono', 'Menlo', monospace;
   font-size: 11px; line-height: 1.4;
-  color: var(--gold-bright);
-  white-space: pre;
-  overflow-x: auto;
-  letter-spacing: 0;
-}
-.cert-ascii.verdict-green { color: var(--gold-bright); }
-
-/* HTML styled certificate */
-.cert-html {
-  background: linear-gradient(180deg, #0d1218 0%, #0a0e14 100%);
-  border: 1px solid var(--gold-dim);
-  border-radius: 4px;
-  padding: 48px 56px;
-  text-align: center;
-  color: var(--gold-bright);
-  position: relative;
-}
-.cert-html::before, .cert-html::after {
-  content: '✦'; position: absolute;
-  color: var(--gold); font-size: 20px;
-}
-.cert-html::before { top: 16px; left: 24px; }
-.cert-html::after { top: 16px; right: 24px; }
-.cert-html .ch-title {
-  font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700;
-  color: var(--gold-bright); letter-spacing: 0.08em;
-  margin-bottom: 24px; padding-bottom: 16px;
-  border-bottom: 1px solid var(--gold-dim);
-}
-.cert-html .ch-motto {
-  font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold);
-  letter-spacing: 0.15em; margin-bottom: 28px;
-}
-.cert-html .ch-sweep-no {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--gold-bright);
-  letter-spacing: 0.1em; margin-bottom: 24px;
-}
-.cert-html .ch-field {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px; color: var(--gold-bright);
-  margin: 6px 0; letter-spacing: 0.03em;
-}
-.cert-html .ch-field-label { color: var(--gold-dim); }
-.cert-html .ch-divider {
-  color: var(--gold-dim); font-size: 11px;
-  letter-spacing: 0.2em; margin: 24px 0;
-}
-.cert-html .ch-section-label {
-  font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold);
-  text-transform: lowercase; letter-spacing: 0.15em;
-  margin: 16px 0 10px;
-}
-.cert-html .ch-control-line {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--gold-bright);
-  margin: 3px 0; letter-spacing: 0.05em;
-}
-.cert-html .ch-verdict {
-  font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700;
-  margin: 16px 0; letter-spacing: 0.1em;
-}
-.cert-html .ch-verdict.green { color: #00d4aa; text-shadow: 0 0 12px rgba(0,212,170,0.3); }
-.cert-html .ch-verdict.yellow { color: #ffb800; text-shadow: 0 0 12px rgba(255,184,0,0.3); }
-.cert-html .ch-verdict.red { color: #ff4757; text-shadow: 0 0 12px rgba(255,71,87,0.3); }
-.cert-html .ch-schema {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; color: var(--gold-dim);
-  letter-spacing: 0.08em; margin-bottom: 24px;
-}
-.cert-html .ch-verify-block {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; color: var(--gold-bright);
-  line-height: 1.8; letter-spacing: 0.03em;
-  background: rgba(255,255,255,0.02);
-  border-left: 2px solid var(--gold);
-  padding: 12px 16px; margin: 16px 0;
-  text-align: left;
-}
-.cert-html .ch-footer {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; color: var(--gold-dim);
-  letter-spacing: 0.1em; margin-top: 28px;
-  padding-top: 16px; border-top: 1px solid var(--gold-dim);
+  color: var(--gold-bright); white-space: pre;
+  overflow-x: auto; letter-spacing: 0;
 }
 
 @media (max-width: 900px) {
-  .posture-grid { grid-template-columns: 1fr 1fr; }
+  .det-hero-grid, .posture-grid { grid-template-columns: 1fr 1fr; }
   .workflow-grid { grid-template-columns: 1fr; }
   .billing-card { grid-template-columns: 1fr 1fr; }
   .hero h1 { font-size: 30px; }
-  .posture-rate { font-size: 56px; }
+  .det-hero-rate { font-size: 48px; }
+  .posture-rate { font-size: 42px; }
+  .topnav { padding: 12px 20px; flex-wrap: wrap; gap: 12px; }
+  .topnav-tabs { width: 100%; }
   .cert-ascii { font-size: 9px; }
-  .cert-html { padding: 32px 20px; }
 }
 </style>
 </head>
 <body>
+
+<nav class="topnav">
+  <div class="topnav-brand">
+    <div class="topnav-mark">V</div>
+    <div class="topnav-name">VerifyAI</div>
+  </div>
+  <div class="topnav-tabs">
+    <a href="/" class="topnav-tab">Run sweep</a>
+    <a href="/echelor" class="topnav-tab active">Echelor dashboard</a>
+    <a href="/echelor/badge" class="topnav-tab">Embed badge</a>
+  </div>
+</nav>
+
 <div class="container">
 
   <header>
@@ -419,7 +453,7 @@ footer {
       <div class="brand-mark">V</div>
       <div>
         <div class="brand-name">VerifyAI</div>
-        <div class="brand-sub">Echelor · design partner</div>
+        <div class="brand-sub">Echelor · live posture</div>
       </div>
     </div>
     <div class="header-meta">
@@ -430,8 +464,8 @@ footer {
   </header>
 
   <section class="hero">
-    <h1>Continuous compliance posture for <span class="accent">Echelor.</span></h1>
-    <p>Live audit ledger across Echelor's AI Chat, accounting integrations, customer-facing outputs, and multi-tenant boundary. Powered by VerifyAI's continuous adversarial sweep — every 30 minutes, every workflow, cryptographically signed.</p>
+    <h1>Determinism is the substrate. <br><span class="accent">Compliance is the wrapper.</span></h1>
+    <p>Finance is small repeatable actions. The agent must be deterministic on those actions, or the compliance receipts mean nothing. Echelor's AI workflows are continuously verified for both — determinism rate measured against synthetic books, compliance posture measured against framework-aligned adversarial probes. Every sweep produces a verifiable audit certificate.</p>
   </section>
 
   <div id="content">
@@ -443,24 +477,21 @@ footer {
 
   <footer>
     <span>Built in Michigan · 2026 · Darwin Adaptive Systems LLC</span>
-    <span>watsonx.ai · Granite-4 · DeepTeam · GLBA · SOC 2 · IRS Pub 1075</span>
+    <span>watsonx.ai · Granite-4 · DeepTeam · GLBA · SOC 2 · IRS Pub 1075 · Determinism Audit</span>
   </footer>
 
 </div>
 
-<!-- ═════ Certificate modal ═════ -->
 <div class="cert-modal-backdrop" id="cert-modal-backdrop">
   <div class="cert-modal">
     <div class="cert-modal-controls">
       <button class="active" id="view-ascii">ASCII</button>
-      <button id="view-html">Engraved</button>
       <button id="copy-ascii">Copy ASCII</button>
-      <button id="open-raw">Open raw</button>
+      <button id="open-raw">Open raw HTML</button>
       <button class="close-btn" id="close-modal">Close</button>
     </div>
-    <div class="cert-modal-body" id="cert-modal-body">
+    <div class="cert-modal-body">
       <div class="cert-ascii" id="cert-ascii-content"></div>
-      <div class="cert-html" id="cert-html-content" style="display:none;"></div>
     </div>
   </div>
 </div>
@@ -492,29 +523,62 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function driftPill(drift) {
+  if (!drift) return '';
+  if (drift.numbers_vary) return '<span class="wf-drift-pill numbers">drift: numbers vary</span>';
+  if (drift.decisions_vary) return '<span class="wf-drift-pill decisions">drift: decisions vary</span>';
+  if (drift.wording_only) return '<span class="wf-drift-pill wording">drift: wording only</span>';
+  return '<span class="wf-drift-pill stable">stable across runs</span>';
+}
+
 function renderContent(data) {
   const overall = data.overall || {};
   const workflows = data.workflows || [];
   const billing = data.billing || {};
 
-  const overallRate = overall.mitigation_rate || 0;
-  const overallCls = rateClass(overallRate, overall.total_probes || 0);
+  const detRate = overall.determinism_rate || 0;
+  const detRuns = overall.determinism_runs_total || 0;
+  const detMeasured = overall.determinism_workflows_measured || 0;
+  const detCls = detMeasured === 0 ? 'pending' : rateClass(detRate, detRuns);
+
+  const compRate = overall.mitigation_rate || 0;
+  const compCls = rateClass(compRate, overall.total_probes || 0);
 
   document.getElementById('header-last-swept').textContent = `last swept ${formatTimestamp(overall.last_swept_ts)}`;
 
-  const frameworkChips = (overall.frameworks || []).map(f =>
-    `<span class="framework-chip">${escapeHtml(f)}</span>`
-  ).join('');
+  const frameworkChips = (overall.frameworks || []).map(f => {
+    const isAudit = f.toLowerCase().includes('determinism');
+    return `<span class="framework-chip ${isAudit ? 'gold' : ''}">${escapeHtml(f)}</span>`;
+  }).join('');
 
   const workflowCards = workflows.map(w => {
-    const cls = rateClass(w.mitigation_rate || 0, w.total_probes || 0);
-    const rateDisplay = w.total_probes === 0 ? '—' : `${((w.mitigation_rate || 0) * 100).toFixed(0)}%`;
+    const isPureDet = w.kind === 'determinism';
+    const cls = isPureDet ? 'determinism' : rateClass(w.mitigation_rate || 0, w.total_probes || 0);
+    const rateCls = isPureDet ? 'gold' : cls;
+    const rateDisplay = w.total_probes === 0 ? '—' :
+                        (isPureDet ? `${((w.mitigation_rate || 0) * 100).toFixed(1)}%`
+                                   : `${((w.mitigation_rate || 0) * 100).toFixed(0)}%`);
     const controlChips = (w.controls_tested || []).slice(0, 6).map(c =>
       `<span class="workflow-control-chip">${escapeHtml(c)}</span>`
     ).join('');
     const moreControls = (w.controls_tested || []).length > 6
       ? `<span class="workflow-control-chip">+${w.controls_tested.length - 6}</span>` : '';
     const hasData = w.total_probes > 0;
+    const fwClass = isPureDet ? 'gold' : '';
+
+    let detBlock = '';
+    if (w.determinism) {
+      const d = w.determinism;
+      detBlock = `
+        <div class="wf-det-block">
+          <div class="wf-det-row">
+            <div class="wf-det-label">Determinism · N=${d.n_runs}</div>
+            <div class="wf-det-value">${(d.score * 100).toFixed(2)}%</div>
+          </div>
+          ${driftPill(d.drift_surface)}
+        </div>`;
+    }
+
     return `
       <div class="workflow-card ${cls}">
         <div class="workflow-head">
@@ -522,24 +586,40 @@ function renderContent(data) {
             <div class="workflow-name">${escapeHtml(w.name)}</div>
             <div class="workflow-desc">${escapeHtml(w.description)}</div>
           </div>
-          <div class="workflow-rate ${cls}">${rateDisplay}</div>
+          <div class="workflow-rate ${rateCls}">${rateDisplay}</div>
         </div>
-        <div class="workflow-framework">${escapeHtml(w.framework)}</div>
-        <div class="workflow-controls">${controlChips}${moreControls}</div>
-        <div class="workflow-stats">
-          <div>
-            <div class="workflow-stat-label">Blocked</div>
-            <div class="workflow-stat-value">${w.blocked}</div>
-          </div>
-          <div>
-            <div class="workflow-stat-label">Leaked</div>
-            <div class="workflow-stat-value">${w.leaked}</div>
-          </div>
-          <div>
-            <div class="workflow-stat-label">Last sweep</div>
-            <div class="workflow-stat-value">${formatTimestamp(w.last_swept_ts)}</div>
-          </div>
-        </div>
+        <div class="workflow-framework ${fwClass}">${escapeHtml(w.framework)}</div>
+        ${controlChips ? `<div class="workflow-controls">${controlChips}${moreControls}</div>` : ''}
+        ${!isPureDet ? `
+          <div class="workflow-stats">
+            <div>
+              <div class="workflow-stat-label">Blocked</div>
+              <div class="workflow-stat-value">${w.blocked}</div>
+            </div>
+            <div>
+              <div class="workflow-stat-label">Leaked</div>
+              <div class="workflow-stat-value">${w.leaked}</div>
+            </div>
+            <div>
+              <div class="workflow-stat-label">Last sweep</div>
+              <div class="workflow-stat-value">${formatTimestamp(w.last_swept_ts)}</div>
+            </div>
+          </div>` : `
+          <div class="workflow-stats">
+            <div>
+              <div class="workflow-stat-label">N runs</div>
+              <div class="workflow-stat-value">${w.total_probes}</div>
+            </div>
+            <div>
+              <div class="workflow-stat-label">Last check</div>
+              <div class="workflow-stat-value">${formatTimestamp(w.last_swept_ts)}</div>
+            </div>
+            <div>
+              <div class="workflow-stat-label">Mode</div>
+              <div class="workflow-stat-value" style="color:var(--gold)">determinism</div>
+            </div>
+          </div>`}
+        ${detBlock}
         <button class="cert-btn" ${hasData ? '' : 'disabled'} onclick="openCertificate('${escapeHtml(w.workflow_id)}')">
           ✦  View Certificate  ✦
         </button>
@@ -549,13 +629,50 @@ function renderContent(data) {
 
   const embedSnippet = `<iframe src="${BADGE_URL}" width="320" height="120" frameborder="0" style="border:0"></iframe>`;
 
+  const detRateDisplay = detMeasured === 0 ? '—' : `${(detRate * 100).toFixed(2)}%`;
+
   document.getElementById('content').innerHTML = `
+    <!-- ═════ Determinism hero (substrate) ═════ -->
+    <div class="det-hero">
+      <div class="det-hero-label">✦ Workflow Determinism · the substrate</div>
+      <div class="det-hero-grid">
+        <div>
+          <div class="det-hero-big">
+            <div class="det-hero-rate ${detCls}">${detRateDisplay}</div>
+            <div class="det-hero-detail">
+              ${detRuns} total runs<br>
+              ${detMeasured} workflows measured
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="det-hero-stat-label">Fixture</div>
+          <div class="det-hero-stat-value">QuickBooks</div>
+          <div class="det-hero-stat-sub">synthetic books</div>
+        </div>
+        <div>
+          <div class="det-hero-stat-label">Temperature</div>
+          <div class="det-hero-stat-value">0.2</div>
+          <div class="det-hero-stat-sub">stress test</div>
+        </div>
+        <div>
+          <div class="det-hero-stat-label">Method</div>
+          <div class="det-hero-stat-value">N-run</div>
+          <div class="det-hero-stat-sub">output equivalence</div>
+        </div>
+      </div>
+      <div class="det-hero-tagline">
+        Finance is small repeatable actions. The agent must be deterministic, or the receipts mean nothing.
+      </div>
+    </div>
+
+    <!-- ═════ Compliance posture (wrapper) ═════ -->
     <div class="posture-card">
+      <div class="posture-label-small">Compliance posture · the wrapper</div>
       <div class="posture-grid">
         <div>
-          <div class="posture-label">Continuous compliance posture</div>
           <div class="posture-big">
-            <div class="posture-rate ${overallCls}">${overall.total_probes === 0 ? '—' : (overallRate*100).toFixed(0) + '%'}</div>
+            <div class="posture-rate ${compCls}">${overall.total_probes === 0 ? '—' : (compRate*100).toFixed(0) + '%'}</div>
             <div class="posture-detail">
               ${overall.blocked} blocked /<br>
               ${overall.total_probes} probes
@@ -585,11 +702,11 @@ function renderContent(data) {
       <div>
         <div class="billing-stat-label">Sweeps (last 30d)</div>
         <div class="billing-stat-value">${billing.sweeps_30d}</div>
-        <div class="billing-stat-sub">continuous + ad-hoc</div>
+        <div class="billing-stat-sub">determinism + compliance</div>
       </div>
       <div>
         <div class="billing-stat-label">Cost (last 30d)</div>
-        <div class="billing-stat-value">$${billing.cost_30d_usd.toFixed(2)}</div>
+        <div class="billing-stat-value">$${billing.cost_30d_usd.toFixed(4)}</div>
         <div class="billing-stat-sub">at $${billing.per_sweep_usd}/sweep</div>
       </div>
       <div>
@@ -610,13 +727,22 @@ function renderContent(data) {
     </div>
 
     <div class="embed-card">
-      <h2>Embeddable compliance badge</h2>
-      <p>Drop this iframe into your FAQ or marketing site to show prospective customers that your AI workflows are under continuous compliance verification.</p>
+      <h2>Embeddable verification badge</h2>
+      <p>Drop this iframe into your FAQ or marketing site. Shows live determinism rate and compliance posture to prospective customers.</p>
       <div class="embed-code" id="embed-snippet">${escapeHtml(embedSnippet)}</div>
       <div class="embed-actions">
         <button class="btn-secondary" onclick="copyEmbed(event)">Copy embed code</button>
         <button class="btn-secondary" onclick="window.open('${BADGE_URL}', '_blank')">Preview badge</button>
       </div>
+
+      <div class="faq-copy-block">
+        <strong>Recommended FAQ copy:</strong><br>
+        Echelor's AI agent is continuously verified for <span class="det-inline">workflow determinism</span> and <span class="pass-inline">compliance</span> with GLBA Safeguards Rule and SOC 2 Type II.
+        Last sweep: <strong>${formatTimestamp(overall.last_swept_ts)}</strong>.
+        Determinism: <span class="det-inline">${detRateDisplay}</span>.
+        Compliance: <span class="pass-inline">${overall.total_probes === 0 ? '—' : (compRate*100).toFixed(0) + '%'}</span>.
+      </div>
+
       <div class="embed-preview">
         <div class="embed-preview-label">Live preview</div>
         <iframe src="${BADGE_URL}" width="320" height="120" frameborder="0" style="border:0;"></iframe>
@@ -635,42 +761,20 @@ function copyEmbed(e) {
   });
 }
 
-// ═════ Certificate modal logic ═════
-let currentCertData = null;
 let currentAsciiText = '';
 
 async function openCertificate(workflowId) {
   const backdrop = document.getElementById('cert-modal-backdrop');
   const asciiEl = document.getElementById('cert-ascii-content');
-  const htmlEl = document.getElementById('cert-html-content');
-
   asciiEl.textContent = 'Loading certificate...';
-  htmlEl.innerHTML = '';
   backdrop.classList.add('open');
 
-  // Default view: ASCII
-  document.getElementById('view-ascii').classList.add('active');
-  document.getElementById('view-html').classList.remove('active');
-  asciiEl.style.display = 'block';
-  htmlEl.style.display = 'none';
-
   try {
-    // Fetch both the JSON (for HTML rendering) and the ASCII text in parallel
-    const [jsonResp, textResp] = await Promise.all([
-      fetch(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=json`),
-      fetch(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=text`)
-    ]);
-
-    if (!jsonResp.ok || !textResp.ok) throw new Error(`HTTP ${jsonResp.status}/${textResp.status}`);
-
-    const data = await jsonResp.json();
+    const textResp = await fetch(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=text`);
+    if (!textResp.ok) throw new Error(`HTTP ${textResp.status}`);
     const asciiText = await textResp.text();
-
-    currentCertData = data;
     currentAsciiText = asciiText;
-
     asciiEl.textContent = asciiText;
-    htmlEl.innerHTML = renderHtmlCert(data);
 
     document.getElementById('open-raw').onclick = () =>
       window.open(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=html`, '_blank');
@@ -679,86 +783,13 @@ async function openCertificate(workflowId) {
   }
 }
 
-function renderHtmlCert(entry) {
-  const ts = entry.ts || 0;
-  const workflowId = entry.workflow_id || '—';
-  const accountId = entry.account_id || '—';
-  let agentRole = entry.agent_role || '—';
-  if (agentRole.length > 80) agentRole = agentRole.substring(0, 77) + '...';
-  const framework = entry.framework || '—';
-  const passRate = entry.pass_rate || 0;
-  const totalProbes = entry.total_probes || 0;
-  const blocked = entry.blocked || 0;
-  const leaked = entry.leaked || 0;
-  const controls = entry.controls_tested || [];
-  const cost = entry.cost_usd || 0;
-
-  const sweepId = `${workflowId}-${ts}`.toUpperCase();
-  const issued = ts ? new Date(ts * 1000).toISOString().replace(/\.\d+Z$/, 'Z') : '—';
-  let glyph, verdict, vColor;
-  if (passRate >= 1.0) { glyph = '✓'; verdict = 'GREEN'; vColor = 'green'; }
-  else if (passRate >= 0.8) { glyph = '⚠'; verdict = 'YELLOW'; vColor = 'yellow'; }
-  else { glyph = '✗'; verdict = 'RED'; vColor = 'red'; }
-  const passPct = (passRate * 100).toFixed(1) + '%';
-
-  const controlsHtml = controls.length > 0
-    ? controls.map(c => `<div class="ch-control-line">${escapeHtml(c)}</div>`).join('')
-    : '<div class="ch-control-line">—</div>';
-
-  return `
-    <div class="ch-title">✦  AUDIT SWEEP CERTIFICATE  ·  verifyai.dev  ✦</div>
-    <div class="ch-motto">✦ SECURITAS · STABILITAS · SIGNUM ✦</div>
-    <div class="ch-sweep-no">SWEEP No. ${escapeHtml(sweepId)}</div>
-    <div class="ch-field"><span class="ch-field-label">issued</span>  ${escapeHtml(issued)}</div>
-    <div class="ch-field"><span class="ch-field-label">workflow</span>  ${escapeHtml(workflowId)}</div>
-    <div class="ch-field"><span class="ch-field-label">agent role</span>  ${escapeHtml(agentRole)}</div>
-    <div class="ch-field"><span class="ch-field-label">cost</span>  $${cost.toFixed(4)}</div>
-    <div class="ch-divider">─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊</div>
-    <div class="ch-field"><span class="ch-field-label">framework</span>  ${escapeHtml(framework)}</div>
-    <div class="ch-field"><span class="ch-field-label">account</span>  ${escapeHtml(accountId)}</div>
-    <div class="ch-section-label">safety posture</div>
-    <div class="ch-field"><span class="ch-field-label">total probes</span>  ${totalProbes}</div>
-    <div class="ch-field"><span class="ch-field-label">blocked</span>  ${blocked}</div>
-    <div class="ch-field"><span class="ch-field-label">leaked</span>  ${leaked}</div>
-    <div class="ch-field"><span class="ch-field-label">pass rate</span>  ${passPct}</div>
-    <div class="ch-section-label">controls tested</div>
-    ${controlsHtml}
-    <div class="ch-divider">─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊</div>
-    <div class="ch-verdict ${vColor}">${glyph}  VERDICT  ${verdict}</div>
-    <div class="ch-schema">schema  darwin.cloud/verifyai/sweep/v1</div>
-    <div class="ch-section-label">verify</div>
-    <div class="ch-verify-block">
-      1. curl darwin-agentic-cloud.fly.dev/.well-known/substrate-keys.json<br>
-      2. confirm sub-signer public key is present and active<br>
-      3. check sweep_signature against the signed payload
-    </div>
-    <div class="ch-footer">verifyai.dev  ·  audit-grade evidence for AI agents  ·  v0.1.0  ✦</div>
-  `;
-}
-
 document.getElementById('close-modal').onclick = () =>
   document.getElementById('cert-modal-backdrop').classList.remove('open');
-
 document.getElementById('cert-modal-backdrop').addEventListener('click', (e) => {
   if (e.target.id === 'cert-modal-backdrop') {
     document.getElementById('cert-modal-backdrop').classList.remove('open');
   }
 });
-
-document.getElementById('view-ascii').onclick = () => {
-  document.getElementById('view-ascii').classList.add('active');
-  document.getElementById('view-html').classList.remove('active');
-  document.getElementById('cert-ascii-content').style.display = 'block';
-  document.getElementById('cert-html-content').style.display = 'none';
-};
-
-document.getElementById('view-html').onclick = () => {
-  document.getElementById('view-html').classList.add('active');
-  document.getElementById('view-ascii').classList.remove('active');
-  document.getElementById('cert-html-content').style.display = 'block';
-  document.getElementById('cert-ascii-content').style.display = 'none';
-};
-
 document.getElementById('copy-ascii').onclick = (e) => {
   navigator.clipboard.writeText(currentAsciiText).then(() => {
     const btn = e.target;
@@ -767,11 +798,8 @@ document.getElementById('copy-ascii').onclick = (e) => {
     setTimeout(() => btn.textContent = orig, 1500);
   });
 };
-
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.getElementById('cert-modal-backdrop').classList.remove('open');
-  }
+  if (e.key === 'Escape') document.getElementById('cert-modal-backdrop').classList.remove('open');
 });
 
 async function loadAggregate() {
