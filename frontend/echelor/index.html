@@ -257,6 +257,90 @@ header {
   padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-bright);
 }
 
+/* ═════════ Info icons + popovers ═════════ */
+.info-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  margin-left: 6px; vertical-align: middle;
+  border-radius: 50%; cursor: help;
+  background: var(--surface-3); color: var(--text-dim);
+  border: 1px solid var(--border-bright);
+  font-family: 'Cinzel', serif; font-size: 10px;
+  font-weight: 700; font-style: italic;
+  transition: all 0.15s; position: relative;
+}
+.info-icon:hover {
+  background: rgba(184,156,78,0.12);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+.info-icon.active {
+  background: rgba(184,156,78,0.15);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+.info-popover {
+  position: absolute;
+  top: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  background: linear-gradient(180deg, #0d1218 0%, #0a0e14 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: 8px;
+  padding: 18px 20px;
+  width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(184,156,78,0.08);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; line-height: 1.55;
+  color: var(--text);
+  display: none;
+  text-align: left;
+}
+.info-popover.open { display: block; }
+.info-popover::before {
+  content: '';
+  position: absolute;
+  top: -7px; left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px; height: 12px;
+  background: #0d1218;
+  border-left: 1px solid var(--gold-dim);
+  border-top: 1px solid var(--gold-dim);
+}
+.info-popover-title {
+  font-family: 'Cinzel', serif; font-size: 12px;
+  color: var(--gold); letter-spacing: 0.12em;
+  text-transform: uppercase; margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--surface-3);
+}
+.info-popover-row {
+  margin-bottom: 10px;
+  display: grid; grid-template-columns: 100px 1fr;
+  gap: 10px; align-items: start;
+}
+.info-popover-row:last-of-type { margin-bottom: 0; }
+.info-popover-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--gold);
+  letter-spacing: 0.06em; text-transform: lowercase;
+  padding-top: 1px;
+}
+.info-popover-val {
+  color: var(--text-dim); font-size: 12px;
+  line-height: 1.5;
+}
+.info-popover-footer {
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--surface-3);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text-faint); letter-spacing: 0.04em;
+  font-style: italic;
+}
+
+/* Relative positioning anchor for card title to host the popover */
+.card-title-wrap { position: relative; display: inline-flex; align-items: center; }
+
 /* Determinism sub-block on each workflow card */
 .wf-det-block {
   margin-top: 14px; padding-top: 14px;
@@ -575,7 +659,7 @@ footer {
 <script>
 const API_AGGREGATE = 'https://vje013--verifyai-backend-echelor-aggregate.modal.run';
 const API_CERT = 'https://vje013--verifyai-backend-certificate.modal.run';
-const API_HISTORY = 'https://vje013--verifyai-backend-echelor-aggregate.modal.run';
+const API_HISTORY = 'https://vje013--verifyai-backend-ledger-history.modal.run';
 const ACCOUNT_ID = 'echelor-design-partner-01';
 const BADGE_URL = window.location.origin + '/echelor/badge';
 
@@ -588,6 +672,105 @@ function rateClass(rate, total) {
   if (rate >= 0.6) return 'warn';
   return 'fail';
 }
+
+// ═════════ Info popover content per card type ═════════
+const CARD_INFO = {
+  determinism: {
+    title: 'Workflow Determinism · the kernel',
+    rows: [
+      ['the metric', 'Percent of identical-input runs that produce equivalent output. Measured across N runs against a synthetic QuickBooks book.'],
+      ['why kernel', 'In an OS, the kernel is the irreducible primitive every other process depends on. Determinism is that for finance AI — if the agent isn\'t deterministic, every compliance receipt downstream is meaningless.'],
+      ['fixture', 'Synthetic QuickBooks data for "Northwind Trading Co." Realistic enough that gpt-4o-mini treats it as a real ledger.'],
+      ['temperature', '0.2 — low but not zero. Tests determinism under the temperature setting most production agents actually use.'],
+      ['drift surface', 'When determinism drops, the dashboard surfaces where: numbers vary, decisions vary, or wording only.'],
+    ],
+    footer: 'Same input must produce same output.',
+  },
+  compliance: {
+    title: 'Compliance Posture · the shell',
+    rows: [
+      ['the metric', 'Percent of adversarial probes the agent blocked. Each probe maps to a specific control in the named compliance framework.'],
+      ['frameworks', 'GLBA Safeguards Rule, SOC 2 Type II, IRS Pub 1075, PCI DSS 4.0, CMMC 2.0 — same engine, different control mappings.'],
+      ['controls', 'When a probe is blocked, we attribute the win to a specific framework control. Audit packets ship the control coverage list.'],
+      ['why shell', 'The shell is the interface layer. Compliance frameworks are interchangeable presentation layers on top of the determinism kernel.'],
+    ],
+    footer: 'A compliance receipt is only as good as the agent\'s determinism.',
+  },
+  workflow_card: {
+    title: 'Workflow card',
+    rows: [
+      ['mitigation rate', 'Percent of adversarial probes blocked in the most recent sweep.'],
+      ['determinism', 'Latest N-run determinism score for this workflow. Drift pill below shows where variance enters.'],
+      ['framework', 'Which compliance framework\'s controls this workflow\'s probes are mapped to.'],
+      ['controls', 'Specific controls hit during the latest sweep. Click View Certificate for the full audit trail.'],
+      ['drift pill', 'Stable / wording only / numbers vary / decisions vary — color-coded by severity.'],
+    ],
+    footer: 'Click View Certificate to see the full audit ledger for this workflow.',
+  },
+  billing: {
+    title: 'Billing · usage-based',
+    rows: [
+      ['per sweep', '$0.005 per sweep — covers adversarial probing, framework mapping, certificate render, and ledger write.'],
+      ['monthly base', '$5/mo per account for ledger storage and dashboard access.'],
+      ['continuous mode', 'Twice-hourly sweeps × 4 workflows × 30 days = ~5,760 sweeps. Total: ~$33/month per account.'],
+      ['determinism runs', 'N=100 determinism check ≈ $0.05 (one-time per workflow per audit cycle).'],
+    ],
+    footer: 'No per-seat pricing. Pay only for what the agent does.',
+  },
+  embed: {
+    title: 'Embeddable verification badge',
+    rows: [
+      ['what it is', 'A 320×120 iframe showing live determinism + compliance posture. Drops into your FAQ or marketing site.'],
+      ['who sees it', 'Your customers and prospects. The badge signals "this AI is continuously verified" without requiring them to dig into the audit ledger themselves.'],
+      ['auto-refresh', 'Badge re-fetches the latest posture every 60 seconds. Always shows current state, not a snapshot.'],
+      ['link target', 'Clicking the badge opens the full dashboard at /echelor so customers can verify the receipts themselves.'],
+    ],
+    footer: 'Continuous trust signal, not a one-time stamp.',
+  },
+};
+
+function infoIconHtml(kind) {
+  return `<span class="card-title-wrap"><span class="info-icon" onclick="toggleInfoPopover(event, '${kind}')" title="What is this?">i</span><span class="info-popover" id="popover-${kind}"></span></span>`;
+}
+
+function renderInfoPopover(kind) {
+  const info = CARD_INFO[kind];
+  if (!info) return '';
+  const rowsHtml = info.rows.map(([k, v]) =>
+    `<div class="info-popover-row"><div class="info-popover-key">${escapeHtml(k)}</div><div class="info-popover-val">${escapeHtml(v)}</div></div>`
+  ).join('');
+  return `
+    <div class="info-popover-title">${escapeHtml(info.title)}</div>
+    ${rowsHtml}
+    ${info.footer ? `<div class="info-popover-footer">${escapeHtml(info.footer)}</div>` : ''}
+  `;
+}
+
+function toggleInfoPopover(event, kind) {
+  event.stopPropagation();
+  const popover = document.getElementById(`popover-${kind}`);
+  const icon = event.currentTarget;
+  if (!popover) return;
+  const isOpen = popover.classList.contains('open');
+
+  // Close all other popovers
+  document.querySelectorAll('.info-popover.open').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.info-icon.active').forEach(i => i.classList.remove('active'));
+
+  if (!isOpen) {
+    popover.innerHTML = renderInfoPopover(kind);
+    popover.classList.add('open');
+    icon.classList.add('active');
+  }
+}
+
+// Close any open popover when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.card-title-wrap')) {
+    document.querySelectorAll('.info-popover.open').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.info-icon.active').forEach(i => i.classList.remove('active'));
+  }
+});
 
 function formatTimestamp(ts) {
   if (!ts) return 'never';
@@ -714,7 +897,7 @@ function renderContent(data) {
   document.getElementById('content').innerHTML = `
     <!-- ═════ Determinism hero (kernel) ═════ -->
     <div class="det-hero">
-      <div class="det-hero-label">✦ Workflow Determinism · the kernel</div>
+      <div class="det-hero-label">✦ Workflow Determinism · the kernel ${infoIconHtml('determinism')}</div>
       <div class="det-hero-grid">
         <div>
           <div class="det-hero-big">
@@ -748,7 +931,7 @@ function renderContent(data) {
 
     <!-- ═════ Compliance posture (shell) ═════ -->
     <div class="posture-card">
-      <div class="posture-label-small">Compliance posture · the shell</div>
+      <div class="posture-label-small">Compliance posture · the shell ${infoIconHtml('compliance')}</div>
       <div class="posture-grid">
         <div>
           <div class="posture-big">
@@ -780,7 +963,7 @@ function renderContent(data) {
 
     <div class="billing-card">
       <div>
-        <div class="billing-stat-label">Sweeps (last 30d)</div>
+        <div class="billing-stat-label">Sweeps (last 30d) ${infoIconHtml('billing')}</div>
         <div class="billing-stat-value">${billing.sweeps_30d}</div>
         <div class="billing-stat-sub">determinism + compliance</div>
       </div>
@@ -801,13 +984,13 @@ function renderContent(data) {
       </div>
     </div>
 
-    <div class="section-label">Workflows under continuous monitoring</div>
+    <div class="section-label">Workflows under continuous monitoring ${infoIconHtml('workflow_card')}</div>
     <div class="workflow-grid">
       ${workflowCards}
     </div>
 
     <div class="embed-card">
-      <h2>Embeddable verification badge</h2>
+      <h2>Embeddable verification badge ${infoIconHtml('embed')}</h2>
       <p>Drop this iframe into your FAQ or marketing site. Shows live determinism rate and compliance posture to prospective customers.</p>
       <div class="embed-code" id="embed-snippet">${escapeHtml(embedSnippet)}</div>
       <div class="embed-actions">
@@ -884,7 +1067,7 @@ function renderHistorySidebar(entries) {
 
 async function loadHistory(workflowId) {
   try {
-    const resp = await fetch(`${API_HISTORY}?history=${encodeURIComponent(workflowId)}&limit=30`);
+    const resp = await fetch(`${API_HISTORY}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&limit=30`);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
     renderHistorySidebar(data.entries || []);
