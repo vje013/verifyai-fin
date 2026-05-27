@@ -6,7 +6,7 @@
 <title>Echelor · VerifyAI compliance dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0a0e14;
@@ -23,18 +23,18 @@
   --warn: #ffb800;
   --fail: #ff4757;
   --pass: #00d4aa;
+  --gold: #b89c4e;
+  --gold-dim: #6e5d2b;
+  --gold-bright: #d4c896;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg); color: var(--text);
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 15px;
-  line-height: 1.55;
-  min-height: 100vh;
-  letter-spacing: -0.005em;
+  font-size: 15px; line-height: 1.55;
+  min-height: 100vh; letter-spacing: -0.005em;
 }
 body {
   background:
@@ -47,8 +47,7 @@ body {
 
 header {
   display: flex; align-items: center; justify-content: space-between;
-  padding-bottom: 32px; margin-bottom: 32px;
-  border-bottom: 1px solid var(--border);
+  padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid var(--border);
 }
 .brand { display: flex; align-items: center; gap: 14px; }
 .brand-mark {
@@ -74,14 +73,10 @@ header {
 @keyframes pulse { 50% { opacity: 0.4; } }
 
 .hero { margin-bottom: 32px; }
-.hero h1 {
-  font-size: 40px; font-weight: 700; letter-spacing: -0.025em;
-  line-height: 1.05; margin-bottom: 12px;
-}
+.hero h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 12px; }
 .hero h1 .accent { color: var(--accent); }
 .hero p { color: var(--text-dim); font-size: 16px; max-width: 700px; }
 
-/* Top overall posture card */
 .posture-card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 16px; padding: 32px; margin-bottom: 24px;
@@ -90,9 +85,7 @@ header {
   display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
   gap: 32px; align-items: center;
 }
-.posture-big {
-  display: flex; align-items: baseline; gap: 16px;
-}
+.posture-big { display: flex; align-items: baseline; gap: 16px; }
 .posture-rate {
   font-family: 'JetBrains Mono', monospace;
   font-size: 72px; font-weight: 700; line-height: 1;
@@ -105,10 +98,7 @@ header {
   font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--text-dim); margin-bottom: 8px;
 }
-.posture-detail {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px; color: var(--text-dim);
-}
+.posture-detail { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); }
 .posture-stat-label {
   font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--text-dim); margin-bottom: 6px;
@@ -122,7 +112,6 @@ header {
   color: var(--text-faint); margin-top: 4px;
 }
 
-/* Framework chips */
 .framework-row {
   display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px;
   padding-top: 20px; border-top: 1px solid var(--border);
@@ -134,7 +123,6 @@ header {
   border: 1px solid rgba(0,212,170,0.2);
 }
 
-/* Workflow cards */
 .section-label {
   font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--text-dim); margin: 24px 0 14px; font-weight: 600;
@@ -156,16 +144,11 @@ header {
   display: flex; justify-content: space-between; align-items: flex-start;
   margin-bottom: 14px;
 }
-.workflow-name {
-  font-size: 15px; font-weight: 600; color: var(--text);
-}
-.workflow-desc {
-  font-size: 12px; color: var(--text-dim); margin-top: 4px;
-}
+.workflow-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.workflow-desc { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 .workflow-rate {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 28px; font-weight: 700;
-  line-height: 1; letter-spacing: -0.02em;
+  font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: -0.02em;
 }
 .workflow-rate.pass { color: var(--pass); }
 .workflow-rate.warn { color: var(--warn); }
@@ -174,10 +157,8 @@ header {
 
 .workflow-stats {
   display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px; padding-top: 14px;
-  border-top: 1px solid var(--border);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--text-dim);
+  gap: 12px; padding-top: 14px; border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
 }
 .workflow-stat-label { color: var(--text-faint); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
 .workflow-stat-value { color: var(--text); font-size: 13px; font-weight: 600; }
@@ -188,14 +169,32 @@ header {
   border: 1px solid rgba(0,212,170,0.2);
   margin-top: 12px; display: inline-block;
 }
-.workflow-controls {
-  margin-top: 10px; display: flex; flex-wrap: wrap; gap: 4px;
-}
+.workflow-controls { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 4px; }
 .workflow-control-chip {
   font-family: 'JetBrains Mono', monospace; font-size: 9px;
   background: var(--surface-3); color: var(--text-dim);
-  padding: 2px 6px; border-radius: 3px;
-  border: 1px solid var(--border-bright);
+  padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-bright);
+}
+
+.cert-btn {
+  margin-top: 16px; width: 100%;
+  background: transparent; border: 1px solid var(--gold-dim);
+  color: var(--gold-bright);
+  padding: 10px 14px; border-radius: 8px;
+  font-family: 'Cinzel', serif; font-size: 11px;
+  letter-spacing: 0.12em; cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+.cert-btn:hover {
+  background: rgba(184,156,78,0.08);
+  border-color: var(--gold); color: var(--gold-bright);
+  box-shadow: 0 0 16px rgba(184,156,78,0.15);
+}
+.cert-btn:disabled {
+  opacity: 0.3; cursor: not-allowed;
+  background: transparent; border-color: var(--text-faint);
+  color: var(--text-faint); box-shadow: none;
 }
 
 /* Embed snippet card */
@@ -203,10 +202,7 @@ header {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 16px; padding: 28px; margin-bottom: 24px;
 }
-.embed-card h2 {
-  font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
-  margin-bottom: 6px;
-}
+.embed-card h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
 .embed-card p { color: var(--text-dim); font-size: 13px; margin-bottom: 16px; }
 .embed-code {
   background: var(--surface-2); border: 1px solid var(--border);
@@ -224,8 +220,7 @@ header {
 .btn-secondary:hover { background: var(--border-bright); }
 .embed-preview {
   margin-top: 20px; padding: 20px; background: #fafafa;
-  border-radius: 8px; border: 1px solid var(--border);
-  color: #111;
+  border-radius: 8px; border: 1px solid var(--border); color: #111;
 }
 .embed-preview-label {
   font-family: 'JetBrains Mono', monospace; font-size: 10px;
@@ -233,7 +228,6 @@ header {
   text-transform: uppercase; margin-bottom: 12px;
 }
 
-/* Billing row */
 .billing-card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 14px; padding: 24px; margin-bottom: 24px;
@@ -260,19 +254,151 @@ footer {
   color: var(--text-faint); letter-spacing: 0.06em;
 }
 
-.loading-state {
-  text-align: center; padding: 60px 20px; color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace; font-size: 13px;
-}
+.loading-state { text-align: center; padding: 60px 20px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
 .spinner-large {
   width: 24px; height: 24px;
   border: 3px solid var(--surface-3);
   border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  border-radius: 50%; animation: spin 0.8s linear infinite;
   display: inline-block; margin-bottom: 12px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═════ Certificate modal ═════ */
+.cert-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px; overflow-y: auto;
+  backdrop-filter: blur(4px);
+}
+.cert-modal-backdrop.open { display: flex; }
+.cert-modal {
+  background: linear-gradient(180deg, #0d1218 0%, #0a0e14 100%);
+  border: 2px double var(--gold-dim);
+  border-radius: 4px;
+  max-width: 900px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  position: relative;
+}
+.cert-modal-controls {
+  display: flex; gap: 8px; justify-content: flex-end;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--surface-3);
+  background: rgba(0,0,0,0.3);
+}
+.cert-modal-controls button {
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-bright);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em;
+  cursor: pointer; transition: all 0.15s;
+  text-transform: uppercase;
+}
+.cert-modal-controls button:hover {
+  background: rgba(184,156,78,0.08); border-color: var(--gold);
+}
+.cert-modal-controls button.active {
+  background: rgba(184,156,78,0.15); border-color: var(--gold);
+}
+.cert-modal-controls .close-btn {
+  border-color: var(--text-faint); color: var(--text-dim);
+  margin-left: auto;
+}
+.cert-modal-body { padding: 40px; }
+
+/* ASCII certificate display */
+.cert-ascii {
+  font-family: 'JetBrains Mono', 'Menlo', monospace;
+  font-size: 11px; line-height: 1.4;
+  color: var(--gold-bright);
+  white-space: pre;
+  overflow-x: auto;
+  letter-spacing: 0;
+}
+.cert-ascii.verdict-green { color: var(--gold-bright); }
+
+/* HTML styled certificate */
+.cert-html {
+  background: linear-gradient(180deg, #0d1218 0%, #0a0e14 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  padding: 48px 56px;
+  text-align: center;
+  color: var(--gold-bright);
+  position: relative;
+}
+.cert-html::before, .cert-html::after {
+  content: '✦'; position: absolute;
+  color: var(--gold); font-size: 20px;
+}
+.cert-html::before { top: 16px; left: 24px; }
+.cert-html::after { top: 16px; right: 24px; }
+.cert-html .ch-title {
+  font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700;
+  color: var(--gold-bright); letter-spacing: 0.08em;
+  margin-bottom: 24px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--gold-dim);
+}
+.cert-html .ch-motto {
+  font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold);
+  letter-spacing: 0.15em; margin-bottom: 28px;
+}
+.cert-html .ch-sweep-no {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--gold-bright);
+  letter-spacing: 0.1em; margin-bottom: 24px;
+}
+.cert-html .ch-field {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--gold-bright);
+  margin: 6px 0; letter-spacing: 0.03em;
+}
+.cert-html .ch-field-label { color: var(--gold-dim); }
+.cert-html .ch-divider {
+  color: var(--gold-dim); font-size: 11px;
+  letter-spacing: 0.2em; margin: 24px 0;
+}
+.cert-html .ch-section-label {
+  font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold);
+  text-transform: lowercase; letter-spacing: 0.15em;
+  margin: 16px 0 10px;
+}
+.cert-html .ch-control-line {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--gold-bright);
+  margin: 3px 0; letter-spacing: 0.05em;
+}
+.cert-html .ch-verdict {
+  font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700;
+  margin: 16px 0; letter-spacing: 0.1em;
+}
+.cert-html .ch-verdict.green { color: #00d4aa; text-shadow: 0 0 12px rgba(0,212,170,0.3); }
+.cert-html .ch-verdict.yellow { color: #ffb800; text-shadow: 0 0 12px rgba(255,184,0,0.3); }
+.cert-html .ch-verdict.red { color: #ff4757; text-shadow: 0 0 12px rgba(255,71,87,0.3); }
+.cert-html .ch-schema {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--gold-dim);
+  letter-spacing: 0.08em; margin-bottom: 24px;
+}
+.cert-html .ch-verify-block {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--gold-bright);
+  line-height: 1.8; letter-spacing: 0.03em;
+  background: rgba(255,255,255,0.02);
+  border-left: 2px solid var(--gold);
+  padding: 12px 16px; margin: 16px 0;
+  text-align: left;
+}
+.cert-html .ch-footer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--gold-dim);
+  letter-spacing: 0.1em; margin-top: 28px;
+  padding-top: 16px; border-top: 1px solid var(--gold-dim);
+}
 
 @media (max-width: 900px) {
   .posture-grid { grid-template-columns: 1fr 1fr; }
@@ -280,6 +406,8 @@ footer {
   .billing-card { grid-template-columns: 1fr 1fr; }
   .hero h1 { font-size: 30px; }
   .posture-rate { font-size: 56px; }
+  .cert-ascii { font-size: 9px; }
+  .cert-html { padding: 32px 20px; }
 }
 </style>
 </head>
@@ -320,12 +448,31 @@ footer {
 
 </div>
 
+<!-- ═════ Certificate modal ═════ -->
+<div class="cert-modal-backdrop" id="cert-modal-backdrop">
+  <div class="cert-modal">
+    <div class="cert-modal-controls">
+      <button class="active" id="view-ascii">ASCII</button>
+      <button id="view-html">Engraved</button>
+      <button id="copy-ascii">Copy ASCII</button>
+      <button id="open-raw">Open raw</button>
+      <button class="close-btn" id="close-modal">Close</button>
+    </div>
+    <div class="cert-modal-body" id="cert-modal-body">
+      <div class="cert-ascii" id="cert-ascii-content"></div>
+      <div class="cert-html" id="cert-html-content" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 const API_AGGREGATE = 'https://vje013--verifyai-backend-echelor-aggregate.modal.run';
+const API_CERT = 'https://vje013--verifyai-backend-certificate.modal.run';
+const ACCOUNT_ID = 'echelor-design-partner-01';
 const BADGE_URL = window.location.origin + '/echelor/badge';
 
-function rateClass(rate, totalProbes) {
-  if (totalProbes === 0) return 'pending';
+function rateClass(rate, total) {
+  if (total === 0) return 'pending';
   if (rate >= 0.85) return 'pass';
   if (rate >= 0.6) return 'warn';
   return 'fail';
@@ -334,8 +481,7 @@ function rateClass(rate, totalProbes) {
 function formatTimestamp(ts) {
   if (!ts) return 'never';
   const d = new Date(ts * 1000);
-  const now = Date.now();
-  const delta = (now - d.getTime()) / 1000;
+  const delta = (Date.now() - d.getTime()) / 1000;
   if (delta < 60) return `${Math.floor(delta)}s ago`;
   if (delta < 3600) return `${Math.floor(delta/60)}m ago`;
   if (delta < 86400) return `${Math.floor(delta/3600)}h ago`;
@@ -353,7 +499,6 @@ function renderContent(data) {
 
   const overallRate = overall.mitigation_rate || 0;
   const overallCls = rateClass(overallRate, overall.total_probes || 0);
-  const overallLabel = overall.total_probes === 0 ? 'No sweeps yet' : `${(overallRate*100).toFixed(0)}% mitigated`;
 
   document.getElementById('header-last-swept').textContent = `last swept ${formatTimestamp(overall.last_swept_ts)}`;
 
@@ -369,6 +514,7 @@ function renderContent(data) {
     ).join('');
     const moreControls = (w.controls_tested || []).length > 6
       ? `<span class="workflow-control-chip">+${w.controls_tested.length - 6}</span>` : '';
+    const hasData = w.total_probes > 0;
     return `
       <div class="workflow-card ${cls}">
         <div class="workflow-head">
@@ -394,6 +540,9 @@ function renderContent(data) {
             <div class="workflow-stat-value">${formatTimestamp(w.last_swept_ts)}</div>
           </div>
         </div>
+        <button class="cert-btn" ${hasData ? '' : 'disabled'} onclick="openCertificate('${escapeHtml(w.workflow_id)}')">
+          ✦  View Certificate  ✦
+        </button>
       </div>
     `;
   }).join('');
@@ -465,7 +614,7 @@ function renderContent(data) {
       <p>Drop this iframe into your FAQ or marketing site to show prospective customers that your AI workflows are under continuous compliance verification.</p>
       <div class="embed-code" id="embed-snippet">${escapeHtml(embedSnippet)}</div>
       <div class="embed-actions">
-        <button class="btn-secondary" onclick="copyEmbed()">Copy embed code</button>
+        <button class="btn-secondary" onclick="copyEmbed(event)">Copy embed code</button>
         <button class="btn-secondary" onclick="window.open('${BADGE_URL}', '_blank')">Preview badge</button>
       </div>
       <div class="embed-preview">
@@ -476,15 +625,154 @@ function renderContent(data) {
   `;
 }
 
-function copyEmbed() {
+function copyEmbed(e) {
   const snippet = document.getElementById('embed-snippet').textContent;
   navigator.clipboard.writeText(snippet).then(() => {
-    const btn = event.target;
+    const btn = e.target;
     const orig = btn.textContent;
     btn.textContent = 'Copied ✓';
     setTimeout(() => btn.textContent = orig, 1500);
   });
 }
+
+// ═════ Certificate modal logic ═════
+let currentCertData = null;
+let currentAsciiText = '';
+
+async function openCertificate(workflowId) {
+  const backdrop = document.getElementById('cert-modal-backdrop');
+  const asciiEl = document.getElementById('cert-ascii-content');
+  const htmlEl = document.getElementById('cert-html-content');
+
+  asciiEl.textContent = 'Loading certificate...';
+  htmlEl.innerHTML = '';
+  backdrop.classList.add('open');
+
+  // Default view: ASCII
+  document.getElementById('view-ascii').classList.add('active');
+  document.getElementById('view-html').classList.remove('active');
+  asciiEl.style.display = 'block';
+  htmlEl.style.display = 'none';
+
+  try {
+    // Fetch both the JSON (for HTML rendering) and the ASCII text in parallel
+    const [jsonResp, textResp] = await Promise.all([
+      fetch(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=json`),
+      fetch(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=text`)
+    ]);
+
+    if (!jsonResp.ok || !textResp.ok) throw new Error(`HTTP ${jsonResp.status}/${textResp.status}`);
+
+    const data = await jsonResp.json();
+    const asciiText = await textResp.text();
+
+    currentCertData = data;
+    currentAsciiText = asciiText;
+
+    asciiEl.textContent = asciiText;
+    htmlEl.innerHTML = renderHtmlCert(data);
+
+    document.getElementById('open-raw').onclick = () =>
+      window.open(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=html`, '_blank');
+  } catch (err) {
+    asciiEl.textContent = `Failed to load certificate: ${err.message}`;
+  }
+}
+
+function renderHtmlCert(entry) {
+  const ts = entry.ts || 0;
+  const workflowId = entry.workflow_id || '—';
+  const accountId = entry.account_id || '—';
+  let agentRole = entry.agent_role || '—';
+  if (agentRole.length > 80) agentRole = agentRole.substring(0, 77) + '...';
+  const framework = entry.framework || '—';
+  const passRate = entry.pass_rate || 0;
+  const totalProbes = entry.total_probes || 0;
+  const blocked = entry.blocked || 0;
+  const leaked = entry.leaked || 0;
+  const controls = entry.controls_tested || [];
+  const cost = entry.cost_usd || 0;
+
+  const sweepId = `${workflowId}-${ts}`.toUpperCase();
+  const issued = ts ? new Date(ts * 1000).toISOString().replace(/\.\d+Z$/, 'Z') : '—';
+  let glyph, verdict, vColor;
+  if (passRate >= 1.0) { glyph = '✓'; verdict = 'GREEN'; vColor = 'green'; }
+  else if (passRate >= 0.8) { glyph = '⚠'; verdict = 'YELLOW'; vColor = 'yellow'; }
+  else { glyph = '✗'; verdict = 'RED'; vColor = 'red'; }
+  const passPct = (passRate * 100).toFixed(1) + '%';
+
+  const controlsHtml = controls.length > 0
+    ? controls.map(c => `<div class="ch-control-line">${escapeHtml(c)}</div>`).join('')
+    : '<div class="ch-control-line">—</div>';
+
+  return `
+    <div class="ch-title">✦  AUDIT SWEEP CERTIFICATE  ·  verifyai.dev  ✦</div>
+    <div class="ch-motto">✦ SECURITAS · STABILITAS · SIGNUM ✦</div>
+    <div class="ch-sweep-no">SWEEP No. ${escapeHtml(sweepId)}</div>
+    <div class="ch-field"><span class="ch-field-label">issued</span>  ${escapeHtml(issued)}</div>
+    <div class="ch-field"><span class="ch-field-label">workflow</span>  ${escapeHtml(workflowId)}</div>
+    <div class="ch-field"><span class="ch-field-label">agent role</span>  ${escapeHtml(agentRole)}</div>
+    <div class="ch-field"><span class="ch-field-label">cost</span>  $${cost.toFixed(4)}</div>
+    <div class="ch-divider">─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊</div>
+    <div class="ch-field"><span class="ch-field-label">framework</span>  ${escapeHtml(framework)}</div>
+    <div class="ch-field"><span class="ch-field-label">account</span>  ${escapeHtml(accountId)}</div>
+    <div class="ch-section-label">safety posture</div>
+    <div class="ch-field"><span class="ch-field-label">total probes</span>  ${totalProbes}</div>
+    <div class="ch-field"><span class="ch-field-label">blocked</span>  ${blocked}</div>
+    <div class="ch-field"><span class="ch-field-label">leaked</span>  ${leaked}</div>
+    <div class="ch-field"><span class="ch-field-label">pass rate</span>  ${passPct}</div>
+    <div class="ch-section-label">controls tested</div>
+    ${controlsHtml}
+    <div class="ch-divider">─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊ ─ ◊</div>
+    <div class="ch-verdict ${vColor}">${glyph}  VERDICT  ${verdict}</div>
+    <div class="ch-schema">schema  darwin.cloud/verifyai/sweep/v1</div>
+    <div class="ch-section-label">verify</div>
+    <div class="ch-verify-block">
+      1. curl darwin-agentic-cloud.fly.dev/.well-known/substrate-keys.json<br>
+      2. confirm sub-signer public key is present and active<br>
+      3. check sweep_signature against the signed payload
+    </div>
+    <div class="ch-footer">verifyai.dev  ·  audit-grade evidence for AI agents  ·  v0.1.0  ✦</div>
+  `;
+}
+
+document.getElementById('close-modal').onclick = () =>
+  document.getElementById('cert-modal-backdrop').classList.remove('open');
+
+document.getElementById('cert-modal-backdrop').addEventListener('click', (e) => {
+  if (e.target.id === 'cert-modal-backdrop') {
+    document.getElementById('cert-modal-backdrop').classList.remove('open');
+  }
+});
+
+document.getElementById('view-ascii').onclick = () => {
+  document.getElementById('view-ascii').classList.add('active');
+  document.getElementById('view-html').classList.remove('active');
+  document.getElementById('cert-ascii-content').style.display = 'block';
+  document.getElementById('cert-html-content').style.display = 'none';
+};
+
+document.getElementById('view-html').onclick = () => {
+  document.getElementById('view-html').classList.add('active');
+  document.getElementById('view-ascii').classList.remove('active');
+  document.getElementById('cert-html-content').style.display = 'block';
+  document.getElementById('cert-ascii-content').style.display = 'none';
+};
+
+document.getElementById('copy-ascii').onclick = (e) => {
+  navigator.clipboard.writeText(currentAsciiText).then(() => {
+    const btn = e.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+};
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.getElementById('cert-modal-backdrop').classList.remove('open');
+  }
+});
 
 async function loadAggregate() {
   try {
@@ -498,14 +786,13 @@ async function loadAggregate() {
       <div class="loading-state">
         <div style="color: var(--fail); font-size: 14px; margin-bottom: 8px;">Failed to load aggregate</div>
         <div style="font-size: 12px;">${escapeHtml(err.message)}</div>
-        <div style="font-size: 11px; margin-top: 16px; color: var(--text-faint);">If no sweeps have been run yet, run a few from <a href="/" style="color: var(--accent);">the main dashboard</a>.</div>
       </div>
     `;
   }
 }
 
 loadAggregate();
-setInterval(loadAggregate, 60000); // Auto-refresh every 60s
+setInterval(loadAggregate, 60000);
 </script>
 </body>
 </html>
