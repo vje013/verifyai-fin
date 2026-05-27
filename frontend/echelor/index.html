@@ -393,8 +393,9 @@ footer {
 .cert-modal {
   background: linear-gradient(180deg, #0d1218 0%, #0a0e14 100%);
   border: 2px double var(--gold-dim); border-radius: 4px;
-  max-width: 900px; width: 100%;
-  max-height: 90vh; overflow-y: auto; position: relative;
+  max-width: 1200px; width: 100%;
+  max-height: 90vh; overflow: hidden; position: relative;
+  display: flex; flex-direction: column;
 }
 .cert-modal-controls {
   display: flex; gap: 8px; justify-content: flex-end;
@@ -411,7 +412,72 @@ footer {
 .cert-modal-controls button:hover { background: rgba(184,156,78,0.08); border-color: var(--gold); }
 .cert-modal-controls button.active { background: rgba(184,156,78,0.15); border-color: var(--gold); }
 .cert-modal-controls .close-btn { border-color: var(--text-faint); color: var(--text-dim); margin-left: auto; }
-.cert-modal-body { padding: 40px; }
+
+/* History sidebar layout */
+.cert-modal-content {
+  display: grid; grid-template-columns: 280px 1fr;
+  flex: 1; overflow: hidden;
+}
+.cert-history-panel {
+  border-right: 1px solid var(--surface-3);
+  background: rgba(0,0,0,0.2);
+  overflow-y: auto; max-height: calc(90vh - 60px);
+}
+.cert-history-header {
+  padding: 16px 20px 10px;
+  font-family: 'Cinzel', serif; font-size: 11px;
+  color: var(--gold); letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--surface-3);
+}
+.cert-history-empty {
+  padding: 20px; color: var(--text-faint);
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  font-style: italic;
+}
+.cert-history-row {
+  padding: 12px 20px; cursor: pointer;
+  border-bottom: 1px solid var(--surface-3);
+  transition: background 0.12s;
+  position: relative;
+}
+.cert-history-row:hover { background: rgba(184,156,78,0.04); }
+.cert-history-row.active {
+  background: rgba(184,156,78,0.1);
+  border-left: 2px solid var(--gold);
+  padding-left: 18px;
+}
+.cert-history-ts {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--text); margin-bottom: 4px; font-weight: 500;
+}
+.cert-history-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  color: var(--text-dim); letter-spacing: 0.04em;
+}
+.cert-history-kind {
+  display: inline-block; padding: 1px 6px; border-radius: 3px;
+  font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase;
+  font-weight: 600;
+}
+.cert-history-kind.compliance { background: rgba(0,212,170,0.1); color: var(--accent); }
+.cert-history-kind.determinism { background: rgba(184,156,78,0.1); color: var(--gold); }
+.cert-history-score {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  font-weight: 700;
+}
+.cert-history-score.pass { color: var(--pass); }
+.cert-history-score.warn { color: var(--warn); }
+.cert-history-score.fail { color: var(--fail); }
+.cert-history-score.gold { color: var(--gold-bright); }
+.cert-history-template {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  color: var(--text-faint); margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+
+.cert-modal-body { padding: 40px; overflow-y: auto; max-height: calc(90vh - 60px); }
 .cert-ascii {
   font-family: 'JetBrains Mono', 'Menlo', monospace;
   font-size: 11px; line-height: 1.4;
@@ -429,6 +495,8 @@ footer {
   .topnav { padding: 12px 20px; flex-wrap: wrap; gap: 12px; }
   .topnav-tabs { width: 100%; }
   .cert-ascii { font-size: 9px; }
+  .cert-modal-content { grid-template-columns: 1fr; }
+  .cert-history-panel { max-height: 200px; border-right: none; border-bottom: 1px solid var(--surface-3); }
 }
 </style>
 </head>
@@ -490,8 +558,16 @@ footer {
       <button id="open-raw">Open raw HTML</button>
       <button class="close-btn" id="close-modal">Close</button>
     </div>
-    <div class="cert-modal-body">
-      <div class="cert-ascii" id="cert-ascii-content"></div>
+    <div class="cert-modal-content">
+      <div class="cert-history-panel">
+        <div class="cert-history-header">✦  Ledger history</div>
+        <div id="cert-history-list">
+          <div class="cert-history-empty">Loading history…</div>
+        </div>
+      </div>
+      <div class="cert-modal-body">
+        <div class="cert-ascii" id="cert-ascii-content"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -499,8 +575,12 @@ footer {
 <script>
 const API_AGGREGATE = 'https://vje013--verifyai-backend-echelor-aggregate.modal.run';
 const API_CERT = 'https://vje013--verifyai-backend-certificate.modal.run';
+const API_HISTORY = 'https://vje013--verifyai-backend-echelor-aggregate.modal.run';
 const ACCOUNT_ID = 'echelor-design-partner-01';
 const BADGE_URL = window.location.origin + '/echelor/badge';
+
+let currentWorkflowId = null;
+let currentSelectedTs = null;
 
 function rateClass(rate, total) {
   if (total === 0) return 'pending';
@@ -763,18 +843,115 @@ function copyEmbed(e) {
 
 let currentAsciiText = '';
 
+function formatHistoryTs(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  // Show YYYY-MM-DD HH:MM:SS in user's local time
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function historyScoreClass(entry) {
+  const score = entry.score;
+  if (score === null || score === undefined) return 'pending';
+  if (entry.kind === 'determinism') return 'gold';
+  if (score >= 0.85) return 'pass';
+  if (score >= 0.6) return 'warn';
+  return 'fail';
+}
+
+function renderHistorySidebar(entries) {
+  const listEl = document.getElementById('cert-history-list');
+  if (!entries || !entries.length) {
+    listEl.innerHTML = '<div class="cert-history-empty">No prior sweeps yet.</div>';
+    return;
+  }
+  listEl.innerHTML = entries.map(e => {
+    const isActive = (currentSelectedTs && e.ts === currentSelectedTs);
+    const templateLabel = e.prompt_template ? `template: ${e.prompt_template}` : '';
+    return `
+      <div class="cert-history-row ${isActive ? 'active' : ''}" data-ts="${e.ts}" onclick="loadCertificateByTs(${e.ts})">
+        <div class="cert-history-ts">${formatHistoryTs(e.ts)}</div>
+        <div class="cert-history-meta">
+          <span class="cert-history-kind ${e.kind}">${e.kind}</span>
+          <span class="cert-history-score ${historyScoreClass(e)}">${e.score_label}</span>
+        </div>
+        ${templateLabel ? `<div class="cert-history-template">${escapeHtml(templateLabel)}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+async function loadHistory(workflowId) {
+  try {
+    const resp = await fetch(`${API_HISTORY}?history=${encodeURIComponent(workflowId)}&limit=30`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderHistorySidebar(data.entries || []);
+  } catch (err) {
+    document.getElementById('cert-history-list').innerHTML =
+      `<div class="cert-history-empty">Failed to load history: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+async function loadCertificateByTs(ts) {
+  if (!currentWorkflowId) return;
+  currentSelectedTs = ts;
+  const asciiEl = document.getElementById('cert-ascii-content');
+  asciiEl.textContent = 'Loading certificate…';
+
+  // Highlight the active row
+  document.querySelectorAll('.cert-history-row').forEach(r => {
+    r.classList.toggle('active', parseInt(r.dataset.ts, 10) === ts);
+  });
+
+  try {
+    const url = `${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(currentWorkflowId)}&format=text&ts=${ts}`;
+    const textResp = await fetch(url);
+    if (!textResp.ok) throw new Error(`HTTP ${textResp.status}`);
+    const asciiText = await textResp.text();
+    currentAsciiText = asciiText;
+    asciiEl.textContent = asciiText;
+
+    document.getElementById('open-raw').onclick = () =>
+      window.open(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(currentWorkflowId)}&format=html&ts=${ts}`, '_blank');
+  } catch (err) {
+    asciiEl.textContent = `Failed to load certificate: ${err.message}`;
+  }
+}
+
 async function openCertificate(workflowId) {
+  currentWorkflowId = workflowId;
+  currentSelectedTs = null;
   const backdrop = document.getElementById('cert-modal-backdrop');
   const asciiEl = document.getElementById('cert-ascii-content');
   asciiEl.textContent = 'Loading certificate...';
+  document.getElementById('cert-history-list').innerHTML = '<div class="cert-history-empty">Loading history…</div>';
   backdrop.classList.add('open');
 
+  // Load history (don't await — render sidebar in parallel with the cert)
+  loadHistory(workflowId);
+
+  // Load the LATEST certificate (no ts param)
   try {
     const textResp = await fetch(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=text`);
     if (!textResp.ok) throw new Error(`HTTP ${textResp.status}`);
     const asciiText = await textResp.text();
     currentAsciiText = asciiText;
     asciiEl.textContent = asciiText;
+
+    // Try to grab the latest ts so we can highlight it once the sidebar renders
+    const jsonResp = await fetch(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=json`);
+    if (jsonResp.ok) {
+      const data = await jsonResp.json();
+      currentSelectedTs = data.ts;
+      // Reapply active class after history renders (small delay)
+      setTimeout(() => {
+        document.querySelectorAll('.cert-history-row').forEach(r => {
+          r.classList.toggle('active', parseInt(r.dataset.ts, 10) === data.ts);
+        });
+      }, 300);
+    }
 
     document.getElementById('open-raw').onclick = () =>
       window.open(`${API_CERT}?account_id=${encodeURIComponent(ACCOUNT_ID)}&workflow_id=${encodeURIComponent(workflowId)}&format=html`, '_blank');
