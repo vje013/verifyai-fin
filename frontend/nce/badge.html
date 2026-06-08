@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=320, initial-scale=1.0" />
+<title>VerifyAI Badge</title>
+<style>
+:root {
+  --bg: #0a0e14;
+  --surface: #11161f;
+  --border: #232c3d;
+  --text: #e6ecf5;
+  --text-dim: #8a96ab;
+  --text-faint: #4a5571;
+  --accent: #00d4aa;
+  --warn: #ffb800;
+  --fail: #ff4757;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: transparent;
+  color: var(--text);
+  font-family: -apple-system, 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+}
+.badge {
+  width: 320px; height: 120px;
+  background: linear-gradient(135deg, #0a0e14 0%, #11161f 100%);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.badge::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--accent), #0a7d6a);
+}
+.badge-top {
+  display: flex; align-items: center; gap: 10px;
+}
+.badge-mark {
+  width: 22px; height: 22px; border-radius: 5px;
+  background: linear-gradient(135deg, var(--accent) 0%, #0a7d6a 100%);
+  display: grid; place-items: center;
+  font-weight: 700; color: #0a0a0a;
+  font-size: 12px;
+}
+.badge-brand {
+  font-weight: 700; font-size: 14px; letter-spacing: -0.02em; color: var(--text);
+}
+.badge-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.06em;
+  color: var(--text-dim); text-transform: uppercase;
+  margin-left: auto;
+}
+
+.badge-middle {
+  display: flex; align-items: baseline; gap: 10px;
+}
+.badge-rate {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px; font-weight: 700;
+  line-height: 1; letter-spacing: -0.02em;
+}
+.badge-rate.pass { color: var(--accent); }
+.badge-rate.warn { color: var(--warn); }
+.badge-rate.fail { color: var(--fail); }
+.badge-rate.pending { color: var(--text-faint); }
+.badge-meta {
+  font-size: 11px; color: var(--text-dim);
+  line-height: 1.3;
+}
+.badge-meta-strong { color: var(--text); font-weight: 600; }
+
+.badge-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.05em;
+  color: var(--text-faint); text-transform: uppercase;
+}
+.badge-status-dot {
+  display: inline-block; width: 5px; height: 5px;
+  border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 6px var(--accent); margin-right: 5px;
+  vertical-align: middle;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: 0.4; } }
+.badge-link {
+  color: var(--accent); text-decoration: none;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+<a href="https://verifyai-fin.vercel.app/nce" target="_blank" style="text-decoration: none; color: inherit;">
+  <div class="badge">
+    <div class="badge-top">
+      <div class="badge-mark">V</div>
+      <div class="badge-brand">VerifyAI</div>
+      <div class="badge-sub">Continuous Compliance</div>
+    </div>
+    <div class="badge-middle">
+      <div class="badge-rate pending" id="badge-rate">—</div>
+      <div class="badge-meta">
+        <div><span class="badge-meta-strong" id="badge-blocked">0</span> attacks blocked</div>
+        <div><span id="badge-frameworks">—</span></div>
+      </div>
+    </div>
+    <div class="badge-bottom">
+      <div><span class="badge-status-dot"></span><span id="badge-last">never</span></div>
+      <div class="badge-link">View posture →</div>
+    </div>
+  </div>
+</a>
+
+<script>
+const API_AGGREGATE = 'https://vje013--verifyai-backend-echelor-aggregate.modal.run?account=nce';
+
+function rateClass(rate, total) {
+  if (total === 0) return 'pending';
+  if (rate >= 0.85) return 'pass';
+  if (rate >= 0.6) return 'warn';
+  return 'fail';
+}
+
+function formatAgo(ts) {
+  if (!ts) return 'never';
+  const delta = (Date.now() - ts * 1000) / 1000;
+  if (delta < 60) return `${Math.floor(delta)}s ago`;
+  if (delta < 3600) return `${Math.floor(delta/60)}m ago`;
+  if (delta < 86400) return `${Math.floor(delta/3600)}h ago`;
+  return `${Math.floor(delta/86400)}d ago`;
+}
+
+async function loadBadge() {
+  try {
+    const resp = await fetch(API_AGGREGATE);
+    if (!resp.ok) throw new Error('aggregate failed');
+    const data = await resp.json();
+    const overall = data.overall || {};
+
+    const rate = overall.mitigation_rate || 0;
+    const total = overall.total_probes || 0;
+    const cls = rateClass(rate, total);
+
+    const rateEl = document.getElementById('badge-rate');
+    rateEl.textContent = total === 0 ? '—' : `${(rate*100).toFixed(0)}%`;
+    rateEl.className = `badge-rate ${cls}`;
+
+    document.getElementById('badge-blocked').textContent = overall.blocked || 0;
+
+    const frameworks = overall.frameworks || [];
+    const fwText = frameworks.length === 0
+      ? 'No sweeps yet'
+      : frameworks.length <= 2
+        ? frameworks.join(' · ')
+        : `${frameworks.length} frameworks`;
+    document.getElementById('badge-frameworks').textContent = fwText;
+
+    document.getElementById('badge-last').textContent = `swept ${formatAgo(overall.last_swept_ts)}`;
+  } catch (err) {
+    console.error(err);
+    document.getElementById('badge-rate').textContent = '—';
+    document.getElementById('badge-last').textContent = 'offline';
+  }
+}
+
+loadBadge();
+setInterval(loadBadge, 60000);
+</script>
+</body>
+</html>
