@@ -1,0 +1,14 @@
+{
+  "schema": "darwin.cloud/verifyai/issuer-keys/v1",
+  "issued_at": "2026-06-29T00:39:21Z",
+  "keys": [
+    {
+      "issuer_key_id": "verifyai-issuer-15805a06c294d5e2",
+      "public_key_b64": "l/9zhSku9jXwxXLrrs0tb4CIdCh56bIUB1ewUBK8v3U=",
+      "algorithm": "Ed25519",
+      "status": "active",
+      "purpose": "verifyai-sweep-certificate-signing",
+      "created_at": "2026-06-29T00:39:21Z"
+    }
+  ]
+}
