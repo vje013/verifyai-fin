@@ -1,4 +1,16 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/.well-known/issuer-keys.json", "destination": "/.well-known/issuer-keys.json" }
+  ],
+  "headers": [
+    {
+      "source": "/.well-known/issuer-keys.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
 }
