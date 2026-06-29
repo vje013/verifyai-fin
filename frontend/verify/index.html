@@ -1,83 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VerifyAI · Certificate Verification</title>
+<title>verifyai :: cert verification</title>
 <style>
-  :root { --bg:#0b0f14; --card:#121821; --line:#1f2a37; --txt:#e6edf3; --dim:#8b98a5; --ok:#2ea043; --bad:#cf222e; --gold:#d4af37; }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--txt); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
-  .wrap { width:100%; max-width:640px; }
-  h1 { font-size:20px; letter-spacing:1px; margin:0 0 4px; }
-  .sub { color:var(--dim); font-size:13px; margin-bottom:24px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px; }
-  label { display:block; font-size:12px; color:var(--dim); margin-bottom:6px; }
-  input { width:100%; background:#0b0f14; border:1px solid var(--line); color:var(--txt); padding:10px 12px; border-radius:8px; font-family:inherit; font-size:13px; margin-bottom:12px; }
-  button { background:var(--gold); color:#0b0f14; border:0; padding:10px 18px; border-radius:8px; font-weight:600; cursor:pointer; font-family:inherit; }
-  button:disabled { opacity:.5; cursor:wait; }
-  .result { margin-top:20px; display:none; }
-  .badge { display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; font-size:13px; font-weight:600; }
-  .badge.ok { background:rgba(46,160,67,.15); color:var(--ok); border:1px solid var(--ok); }
-  .badge.bad { background:rgba(207,34,46,.15); color:var(--bad); border:1px solid var(--bad); }
-  .kv { margin-top:16px; font-size:12px; }
-  .kv div { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); }
-  .kv .k { color:var(--dim); }
-  .kv .v { text-align:right; word-break:break-all; max-width:60%; }
-  .err { color:var(--bad); font-size:13px; margin-top:12px; }
-  .seal { color:var(--gold); font-size:11px; letter-spacing:2px; margin-top:24px; text-align:center; }
-  a { color:var(--gold); }
+  html,body{background:#000000;margin:0;padding:0;}
+  body{color:#33FF33;font-family:"Courier New",Courier,monospace;font-size:15px;line-height:1.35;}
+  pre{margin:0;padding:18px 12px;white-space:pre-wrap;word-wrap:break-word;}
+  a{color:#33FF33;}
+  a:hover{background:#33FF33;color:#000000;}
+  input{
+    background:#000000;color:#33FF33;
+    border:none;border-bottom:1px solid #33FF33;
+    font-family:"Courier New",Courier,monospace;font-size:15px;
+    padding:0 2px;outline:none;width:36ch;
+  }
+  input:focus{background:#0a0a0a;}
+  button{
+    background:#000000;color:#33FF33;
+    border:1px solid #33FF33;
+    font-family:"Courier New",Courier,monospace;font-size:15px;
+    padding:2px 10px;cursor:pointer;
+  }
+  button:hover{background:#33FF33;color:#000000;}
+  button:disabled{color:#1a8a1a;border-color:#1a8a1a;cursor:wait;}
+  .bad{color:#33FF33;}
+  .cur{display:inline-block;width:8px;height:15px;background:#33FF33;vertical-align:-2px;animation:b 1s steps(1) infinite;}
+  @keyframes b{50%{opacity:0;}}
+  @media (prefers-reduced-motion: reduce){.cur{animation:none;}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>VerifyAI · Certificate Verification</h1>
-  <div class="sub">Independent third-party verification of a determinism / compliance sweep certificate. Ed25519 signature checked against the published issuer key.</div>
-  <div class="card">
-    <label>Account ID</label>
-    <input id="account" placeholder="echelor-design-partner-01" value="echelor-design-partner-01">
-    <label>Workflow ID</label>
-    <input id="workflow" placeholder="echelor-ai-chat" value="echelor-ai-chat">
-    <button id="btn" onclick="verify()">Verify certificate</button>
-    <div class="err" id="err"></div>
-    <div class="result" id="result"></div>
-  </div>
-  <div class="seal">✦ SECURITAS · STABILITAS · SIGNUM ✦</div>
-</div>
+<pre>
++----------------------------------------------------------------+
+|                                                                |
+|   db   db d88888b d8888b. d888888b d88888b db    db  .d8b.  d888|
+|   88   88 88'     88  `8D   `88'   88'     `8b  d8'  d8' `8b   `|
+|   Y8   8P 88ooooo 88oobY'    88    88ooo    `8bd8'  88ooo88    8|
+|   `8b d8' 88~~~~~ 88`8b      88    88~~~      88    88~~~88    8|
+|    `8d8'  88.     88 `88.   .88.   88         88    88   88   .8|
+|      Y8   Y88888P 88   YD Y888888P Y88888P    YP    YP   YP d888|
+|                                                                |
+|   C E R T   V E R I F I C A T I O N   T E R M I N A L           |
+|                                                                |
++----------------------------------------------------------------+
+
+  independent third-party check of a determinism / compliance
+  sweep certificate. ed25519 signature validated against the
+  published issuer key.
+
+  ----------------------------------------------------------------
+
+  account id  : <input id="account" value="echelor-design-partner-01" autocomplete="off">
+  workflow id : <input id="workflow" value="echelor-ai-chat" autocomplete="off">
+
+  <button id="btn" onclick="verify()">[ run verify ]</button>
+
+<span id="out"></span>
+  ----------------------------------------------------------------
+  * securitas * stabilitas * signum *
+  darwin adaptive systems // est. mmxxvi
+</pre>
 <script>
-const BACKEND = "https://vje013--verifyai-backend-certificate.modal.run";
+const BACKEND="https://vje013--verifyai-backend-certificate.modal.run";
+
+function pad(k){ return (k+"                ").slice(0,16); }
+
 async function verify(){
   const btn=document.getElementById('btn');
-  const err=document.getElementById('err');
-  const res=document.getElementById('result');
-  err.textContent=''; res.style.display='none';
+  const out=document.getElementById('out');
   const account=document.getElementById('account').value.trim();
   const workflow=document.getElementById('workflow').value.trim();
-  if(!account||!workflow){ err.textContent='Account ID and Workflow ID required.'; return; }
-  btn.disabled=true; btn.textContent='Verifying…';
+  out.textContent="";
+  if(!account||!workflow){ out.textContent="\n  > err: account id and workflow id required\n"; return; }
+  btn.disabled=true; btn.textContent="[ ...running... ]";
   try{
     const url=`${BACKEND}?account_id=${encodeURIComponent(account)}&workflow_id=${encodeURIComponent(workflow)}&verify=true`;
     const r=await fetch(url);
-    if(!r.ok){ throw new Error(`No certificate found (HTTP ${r.status})`); }
+    if(!r.ok){ throw new Error("no certificate found (http "+r.status+")"); }
     const d=await r.json();
     const v=d.verification||{};
     const ok=v.valid===true;
-    res.innerHTML=`
-      <span class="badge ${ok?'ok':'bad'}">${ok?'✓ VALID SIGNATURE':'✗ INVALID'}</span>
-      <div class="kv">
-        <div><span class="k">Sweep ID</span><span class="v">${d.sweep_id||'—'}</span></div>
-        <div><span class="k">Account</span><span class="v">${d.account_id||'—'}</span></div>
-        <div><span class="k">Workflow</span><span class="v">${d.workflow_id||'—'}</span></div>
-        <div><span class="k">Kind</span><span class="v">${d.kind||'—'}</span></div>
-        <div><span class="k">Algorithm</span><span class="v">${v.algorithm||d.signature_algorithm||'—'}</span></div>
-        <div><span class="k">Signer key</span><span class="v">${v.signer_key_id||'—'}</span></div>
-        <div><span class="k">Payload SHA-256</span><span class="v">${(v.payload_sha256||'—').slice(0,24)}…</span></div>
-        <div><span class="k">Public key</span><span class="v"><a href="${d.public_key_url}" target="_blank">issuer-keys.json</a></span></div>
-        <div><span class="k">Issuer</span><span class="v">${d.issuer||'—'}</span></div>
-      </div>`;
-    res.style.display='block';
-  }catch(e){ err.textContent=e.message; }
-  finally{ btn.disabled=false; btn.textContent='Verify certificate'; }
+
+    const rows=[
+      ["sweep id",      d.sweep_id||"-"],
+      ["account",       d.account_id||"-"],
+      ["workflow",      d.workflow_id||"-"],
+      ["kind",          d.kind||"-"],
+      ["algorithm",     v.algorithm||d.signature_algorithm||"-"],
+      ["signer key",    v.signer_key_id||"-"],
+      ["payload sha256",(v.payload_sha256||"-").slice(0,40)],
+      ["issuer",        d.issuer||"-"],
+    ];
+
+    const banner = ok
+      ? "  +------------------------------------+\n  |   [ OK ]  VALID  SIGNATURE         |\n  +------------------------------------+"
+      : "  +------------------------------------+\n  |   [!!]  INVALID  SIGNATURE         |\n  +------------------------------------+";
+
+    let lines=["", banner, ""];
+    // stream the rows out one at a time
+    out.textContent="\n"+banner+"\n\n";
+    let i=0;
+    function next(){
+      if(i<rows.length){
+        out.textContent += "  "+pad(rows[i][0])+": "+rows[i][1]+"\n";
+        i++;
+        setTimeout(next,80);
+      } else {
+        out.innerHTML += '  public key      : <a href="'+d.public_key_url+'" target="_blank">issuer-keys.json</a>\n';
+        out.innerHTML += "\n  > "+(ok?"verification complete":"verification failed")+' <span class="cur"></span>\n\n';
+      }
+    }
+    next();
+  }catch(e){
+    out.textContent="\n  > err: "+e.message+"\n";
+  }finally{
+    btn.disabled=false; btn.textContent="[ run verify ]";
+  }
 }
 </script>
 </body>
